@@ -27,13 +27,18 @@ public class QLearningInitializer {
         int[][] R = new int[n][n];
 
         for (int i = 0; i < n; i++) {
+            System.out.print(i+". neighbours:");
+            int nb=input.nextInt();
             for (int j = 0; j < n; j++) {
-                R[i][j] = -1;
 
-//                for (int ar = 0; ar <= n; ar++) {
-//                        if ( j== neighbor[ar]) {
-//                            R[i][j] = 0;
-//                        }
+
+
+                R[i][j] = -1;
+                if (nb==j)
+                {
+                    R[i][j]=0;
+
+                }
 
 
             }
