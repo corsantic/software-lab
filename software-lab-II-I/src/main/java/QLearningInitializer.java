@@ -17,9 +17,7 @@ public class QLearningInitializer
         // degiskenler
 
 
-
         // readInputs
-
 
 
         // r matris olustur
@@ -29,17 +27,40 @@ public class QLearningInitializer
 
         // matris yaz
 
-        System.out.println("......");
+
         System.out.print("Matris boyutu:");
         Scanner input = new Scanner(System.in);
         int n = input.nextInt();
         int[][] R = new int[n][n];
 
-        int start, end, iterationCount;
         input.nextLine();
+
         readNeighbours(input, n, R);
 
 
+        writeMatrix(n, R);
+
+        inputStartEndAndIteration(input);
+        //        Q(durum; aksiyon) = R(durum; aksiyon)+
+        //MaxfQ(sonrakidurumlar; tumaksiyonlar)g
+
+
+    }
+
+    private void inputStartEndAndIteration(Scanner input)
+    {
+        int start, end, iterationCount;
+        System.out.println("");
+        System.out.println("start:");
+        start = input.nextInt();
+        System.out.println("end: ");
+        end = input.nextInt();
+        System.out.println("iterationCount: ");
+        iterationCount = input.nextInt();
+    }
+
+    private void writeMatrix(int n, int[][] r)
+    {
         System.out.print("R matrix:");
         for (int i = 0; i < n; i++)
 
@@ -47,25 +68,10 @@ public class QLearningInitializer
             System.out.println("");
             for (int j = 0; j < n; j++)
             {
-                System.out.print(R[i][j] + " ");
+                System.out.print(r[i][j] + " ");
 
             }
         }
-
-
-        System.out.println("start:");
-        start = input.nextInt();
-        System.out.println("end: ");
-        end = input.nextInt();
-        System.out.println("iterationCount: ");
-        iterationCount = input.nextInt();
-
-//        Q(durum; aksiyon) = R(durum; aksiyon)+
-//MaxfQ(sonrakidurumlar; tumaksiyonlar)g
-
-
-
-
     }
 
     private void readNeighbours(Scanner input, int n, int[][] r)
