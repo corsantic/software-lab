@@ -20,8 +20,9 @@ public class QLearning {
             }
         });
 
+        rMatrix[end][end] = 100;
         for (int j : neighbours.get(end)) {
-            rMatrix[end][j] = 100;
+            rMatrix[j][end] = 100;
         }
 
         return rMatrix;
@@ -40,8 +41,8 @@ public class QLearning {
      * Q(durum,aksiyon) = R(durum,aksiyon)+γ×Max{Q(sonrakidurumlar,tumaksiyonlar)}
      * γ  ̈o ̆grenme katsayısıdır ve 0 ile 1 arasında bir de ̆ger alır.
      */
-    public int[][] buildQMatrix(Map<Integer, int[]> neighbours, int iterationCount, int start, int end, int n) {
-        int[][] q = new int[n][n];
+    public double[][] buildQMatrix(Map<Integer, int[]> neighbours, int iterationCount, int start, int end, int n) {
+        double[][] q = new double[n][n];
 
         int[][] r = getRMatrix(n, end, neighbours);
         int x = start, y;
@@ -59,15 +60,15 @@ public class QLearning {
         return q;
     }
 
-    private int getNextQPoint(int x, int y, int[][] r, int[][] q, int... yNeigbours) {
-        int max = 0;
+    private double getNextQPoint(int x, int y, int[][] r, double[][] q, int... yNeigbours) {
+        double max = 0;
         if (null != yNeigbours) {
             for (int yNeigbour : yNeigbours) {
                 max = Math.max(max, q[y][yNeigbour]);
             }
         }
-        System.out.println("x:" + x + " y:" + y);
-        return r[x][y] + (int) (Y * max); // todo: (int) cast ?
+//        System.out.println("x:" + x + " y:" + y);
+        return r[x][y] + (Y * max); // todo: (int) cast ?
     }
 
 }

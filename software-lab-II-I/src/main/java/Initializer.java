@@ -21,7 +21,7 @@ public class Initializer {
 
         System.out.println("-----------------------");
         System.out.println("------- Q Matrix ---------");
-        int[][] qMatrix = qLearning.buildQMatrix(lab.getNeighbours(), lab.getIterationCount(), lab.getStartPoint(), lab.getEndPoint(), lab.getN());
+        double[][] qMatrix = qLearning.buildQMatrix(lab.getNeighbours(), lab.getIterationCount(), lab.getStartPoint(), lab.getEndPoint(), lab.getN());
 
         writeMatrix(qMatrix);
 
@@ -34,8 +34,8 @@ public class Initializer {
         lab.setNeighbours(input33);
 
         lab.setStartPoint(0);
-        lab.setEndPoint(3);
-        lab.setIterationCount(1000);
+        lab.setEndPoint(7);
+        lab.setIterationCount(3000);
 
         return lab;
     }
@@ -67,6 +67,19 @@ public class Initializer {
     }
 
     private void writeMatrix(int[][] r) {
+        int n = r.length;
+        for (int i = 0; i < n; i++)
+
+        {
+            System.out.println("");
+            for (int j = 0; j < n; j++) {
+                System.out.print(r[i][j] + " ");
+
+            }
+        }
+    }
+
+    private void writeMatrix(double[][] r) {
         int n = r.length;
         for (int i = 0; i < n; i++)
 
