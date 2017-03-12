@@ -1,75 +1,72 @@
 package qlearning;
 
-import java.util.Map;
+import entity.Maze;
+import util.Commons;
 
 import static util.Commons.rand;
 
 public class QLearning {
-    static double Y = 0.80;
+    static double Y = 0.8;
 
-    public int[][] getRMatrix(int n, int end, Map<Integer, int[]> neighbours) {
-        int[][] rMatrix = dump(n);
+    public int[][] getRMatrix(Maze maze) {
+        int n = maze.getN();
+
+        int[][] rMatrix = Commons.createMatrix(n, -1);
         System.out.println("   ---- " + n);
 
-        neighbours.forEach((i, neigs) -> {
+        maze.getNeighbours().forEach((i, neigs) -> {
             for (int j : neigs) {
                 rMatrix[i][j] = 0;
             }
         });
 
-        rMatrix[end][end] = 100;
-        for (int j : neighbours.get(end)) {
-            rMatrix[j][end] = 100;
+        rMatrix[maze.getEndPoint()][maze.getEndPoint()] = 100;
+        for (int j : maze.getNeighbours().get(maze.getEndPoint())) {
+            rMatrix[j][maze.getEndPoint()] = 100;
         }
 
         return rMatrix;
-    }
-
-    int[][] dump(int n) {
-        int[][] d = new int[n][n];
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                d[i][j] = -1;
-
-        return d;
     }
 
     /**
      * Q(durum,aksiyon) = R(durum,aksiyon)+γ×Max{Q(sonrakidurumlar,tumaksiyonlar)}
      * γ  ̈o ̆grenme katsayısıdır ve 0 ile 1 arasında bir de ̆ger alır.
      */
-    public double[][] buildQMatrix(Map<Integer, int[]> neighbours, int iterationCount, int start, int end, int n) {
-        double[][] q = new double[n][n];
+    public double[][] buildQMatrix(Maze maze) {
+        double[][] Q = new double[maze.getN()][maze.getN()];
 
-        int[][] r = getRMatrix(n, end, neighbours);
-        int x = start, y;
+        int[][] R = getRMatrix(maze);
+        int x = maze.getStartPoint(), y;
 
         int i = 0;
-        while (i < iterationCount) {
-            int[] neigs = neighbours.get(x);
-            y = neigs[rand(0, neigs.length - 1)];
-            int[] yneigs = neighbours.get(y);
+        while (i < maze.getIterationCount()) {
+            int[] xNeighbours = maze.getNeighbours().get(x);
+            y = xNeighbours[rand(0, xNeighbours.length - 1)];
 
-            q[x][y] = getNextQPoint(x, y, r, q, yneigs);
+            Q[x][y] = getNextQPoint(Q, R, x, y, maze);
+
             x = y;
             i++;
         }
 
-        return q;
+        return Q;
     }
 
-    private double getNextQPoint(int x, int y, int[][] r, double[][] q, int... yNeigbours) {
+    private double getNextQPoint(double[][] Q, int[][] R, int x, int y, Maze maze) {
         double max = -4;
-        if (null != yNeigbours) {
-            for (int yNeigbour : yNeigbours) {
-                max = Math.max(max, q[y][yNeigbour]);
-            }
+        for (int yNeigbour : maze.getNeighbours().get(y)) {
+            max = Math.max(max, Q[y][yNeigbour]);
         }
-//        System.out.println("x:" + Y * max);
-        double num = r[x][y] + (Y * max);
-        System.out.format("\nr[x][y] : %s + (Y * max) : %s  == %s", r[x][y], Y * max, num);
 
-        return Double.parseDouble(String.format("%.1f", num));
+        double num = R[x][y] + (Y * max);
+//        Double.parseDouble(String.format("%.1f", num))
+        return num;
+    }
+
+    // todo:
+    public int[] findPath(Maze maze) {
+
+        return new int[5];
     }
 
 }

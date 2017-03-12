@@ -7,6 +7,15 @@ import java.util.Random;
  */
 public class Commons {
 
+    public static int[][] createMatrix(int n, int defaultValue) {
+        int[][] d = new int[n][n];
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                d[i][j] = defaultValue;
+
+        return d;
+    }
+
     public static void writeMatrix(int[][] r) {
         int n = r.length;
         for (int i = 0; i < n; i++)

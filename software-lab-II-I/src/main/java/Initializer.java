@@ -18,12 +18,12 @@ public class Initializer {
     void run(String[] args) {
 //        Maze maze = buildLab();
         Maze maze = Constants.INPUT_33;
-        int[][] rMatrix = qLearning.getRMatrix(maze.getN(), maze.getEndPoint(), maze.getNeighbours());
+        int[][] rMatrix = qLearning.getRMatrix(maze);
         writeMatrix(rMatrix);
 
         System.out.println("-----------------------");
-        System.out.println("------- Q Matrix ---------");
-        double[][] qMatrix = qLearning.buildQMatrix(maze.getNeighbours(), maze.getIterationCount(), maze.getStartPoint(), maze.getEndPoint(), maze.getN());
+        System.out.println("------- Q Matrix ---------\n");
+        double[][] qMatrix = qLearning.buildQMatrix(maze);
 
         writeMatrix(qMatrix);
 
