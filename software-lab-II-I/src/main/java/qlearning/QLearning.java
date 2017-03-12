@@ -13,6 +13,7 @@ public class QLearning {
 
     public int[][] getRMatrix(int n, int end, Map<Integer, int[]> neighbours) {
         int[][] rMatrix = dump(n);
+        System.out.println("   ---- " + n);
 
         neighbours.forEach((i, neigs) -> {
             for (int j : neigs) {
