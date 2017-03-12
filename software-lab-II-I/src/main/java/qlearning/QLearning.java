@@ -1,15 +1,11 @@
 package qlearning;
 
 import java.util.Map;
-import java.util.Random;
+
+import static util.Commons.rand;
 
 public class QLearning {
-    static double Y = 0.8;
-
-    public static int rand(int min, int max) {
-        int rand = new Random().nextInt((max - min) + 1) + min;
-        return rand;
-    }
+    static double Y = 0.80;
 
     public int[][] getRMatrix(int n, int end, Map<Integer, int[]> neighbours) {
         int[][] rMatrix = dump(n);
@@ -52,8 +48,9 @@ public class QLearning {
         while (i < iterationCount) {
             int[] neigs = neighbours.get(x);
             y = neigs[rand(0, neigs.length - 1)];
+            int[] yneigs = neighbours.get(y);
 
-            q[x][y] = getNextQPoint(x, y, r, q, neighbours.get(y));
+            q[x][y] = getNextQPoint(x, y, r, q, yneigs);
             x = y;
             i++;
         }
@@ -62,14 +59,17 @@ public class QLearning {
     }
 
     private double getNextQPoint(int x, int y, int[][] r, double[][] q, int... yNeigbours) {
-        double max = 0;
+        double max = -4;
         if (null != yNeigbours) {
             for (int yNeigbour : yNeigbours) {
                 max = Math.max(max, q[y][yNeigbour]);
             }
         }
-//        System.out.println("x:" + x + " y:" + y);
-        return r[x][y] + (Y * max); // todo: (int) cast ?
+//        System.out.println("x:" + Y * max);
+        double num = r[x][y] + (Y * max);
+        System.out.format("\nr[x][y] : %s + (Y * max) : %s  == %s", r[x][y], Y * max, num);
+
+        return Double.parseDouble(String.format("%.1f", num));
     }
 
 }

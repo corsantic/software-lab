@@ -5,7 +5,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Lab {
+public class Maze {
     int n;
     int iterationCount;
     int startPoint;
@@ -13,9 +13,17 @@ public class Lab {
 
     Map<Integer, int[]> neighbours;
 
-    public Lab(int n) {
+    public Maze(int n) {
         this.n = n;
         this.neighbours = new HashMap<>();
+    }
+
+    public Maze(int n, int iterationCount, int startPoint, int endPoint, Map<Integer, int[]> neighbours) {
+        this.n = n;
+        this.iterationCount = iterationCount;
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
+        this.neighbours = neighbours;
     }
 
     public int getN() {
