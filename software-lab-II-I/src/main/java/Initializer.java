@@ -23,7 +23,7 @@ public class Initializer
     void run(String[] args)
     {
         //        Maze maze = buildLab();
-        Maze maze = Constants.INPUT_22;
+        Maze maze = Constants.INPUT_33;
         int[][] rMatrix = qLearning.getRMatrix(maze);
         writeMatrix(rMatrix);
 
@@ -32,6 +32,8 @@ public class Initializer
         double[][] qMatrix = qLearning.buildQMatrix(maze);
 
         writeMatrix(qMatrix);
+
+        System.out.println(qLearning.findPath(maze));
 
     }
 
