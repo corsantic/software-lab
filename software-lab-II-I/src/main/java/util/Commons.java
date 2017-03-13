@@ -5,9 +5,11 @@ import java.util.Random;
 /**
  * Created by stuff on 3/12/2017.
  */
-public class Commons {
+public class Commons
+{
 
-    public static int[][] createMatrix(int n, int defaultValue) {
+    public static int[][] createMatrix(int n, int defaultValue)
+    {
         int[][] d = new int[n][n];
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++)
@@ -16,41 +18,48 @@ public class Commons {
         return d;
     }
 
-    public static void writeMatrix(int[][] r) {
+    public static void writeMatrix(int[][] r)
+    {
         int n = r.length;
         for (int i = 0; i < n; i++)
 
         {
             System.out.println("");
-            for (int j = 0; j < n; j++) {
+            for (int j = 0; j < n; j++)
+            {
                 System.out.print(r[i][j] + " ");
 
             }
         }
     }
 
-    public static int rand(int min, int max) {
+    public static int rand(int min, int max)
+    {
         int rand = new Random().nextInt((max - min) + 1) + min;
         return rand;
     }
 
 
-    public static void writeMatrix(double[][] r) {
+    public static void writeMatrix(double[][] r)
+    {
         int n = r.length;
         for (int i = 0; i < n; i++)
 
         {
             System.out.println("");
-            for (int j = 0; j < n; j++) {
+            for (int j = 0; j < n; j++)
+            {
                 System.out.print(r[i][j] + " ");
 
             }
         }
     }
 
-    public static int[] toIntArray(String[] sArray) {
+    public static int[] toIntArray(String[] sArray)
+    {
         int[] array = new int[sArray.length];
-        for (int i = 0; i < sArray.length; i++) {
+        for (int i = 0; i < sArray.length; i++)
+        {
             array[i] = Integer.parseInt(sArray[i]);
         }
         return array;

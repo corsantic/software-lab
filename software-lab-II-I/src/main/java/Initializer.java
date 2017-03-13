@@ -1,23 +1,29 @@
+import static util.Commons.toIntArray;
+import static util.Commons.writeMatrix;
+
+import java.io.File;
+import java.util.Scanner;
+
 import entity.Maze;
 import qlearning.QLearning;
 import util.Constants;
 
-import java.util.Scanner;
 
-import static util.Commons.toIntArray;
-import static util.Commons.writeMatrix;
+public class Initializer
+{
+    private static final String FILE_NAME = "inputs/input22.txt";
 
+    private QLearning qLearning = new QLearning();
 
-public class Initializer {
-    QLearning qLearning = new QLearning();
-
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         new Initializer().run(args);
     }
 
-    void run(String[] args) {
-//        Maze maze = buildLab();
-        Maze maze = Constants.INPUT_33;
+    void run(String[] args)
+    {
+        //        Maze maze = buildLab();
+        Maze maze = Constants.INPUT_22;
         int[][] rMatrix = qLearning.getRMatrix(maze);
         writeMatrix(rMatrix);
 
@@ -30,14 +36,19 @@ public class Initializer {
     }
 
 
-    private Maze buildLab() {
+    private Maze buildLab()
+    {
+        String filePath = getFilePath(FILE_NAME);
+        File file = new File(filePath); // read neigbours
+
         Scanner input = new Scanner(System.in);
         System.out.print("matrix size: ");
         int n = input.nextInt();
         Maze maze = new Maze(n);
         input.nextLine(); //tmp
 
-        for (int i = 0; i < n * n; i++) {
+        for (int i = 0; i < n * n; i++)
+        {
             System.out.print(i + ". neighbours: ");
             String nb = input.nextLine();
             maze.getNeighbours().put(i, toIntArray(nb.split(",")));
@@ -56,6 +67,10 @@ public class Initializer {
         return maze;
     }
 
-
+    private String getFilePath(String filename)
+    {
+        ClassLoader loader = getClass().getClassLoader();
+        return loader.getResource(filename).getFile();
+    }
 }
 
