@@ -1,9 +1,9 @@
 package util;
 
-import entity.Maze;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import entity.Maze;
 
 public interface Constants {
 
