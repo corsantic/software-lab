@@ -40,26 +40,7 @@ public class Initializer
 
     private Maze buildLab() throws IOException
     {
-        String filePath = getFilePath(FILE_NAME);
-        BufferedReader reader = new BufferedReader(new FileReader(
-                filePath));
-        while (true)
-        {
-            String line = reader.readLine();
-            if (line == null)
-            {
-                break;
-            }
-            // Split line on comma.
-            String[] parts = line.split(",");
-            for (String part : parts)
-            {
-                System.out.print(part+",");
-            }
-            System.out.println();
-        }
-
-        reader.close();
+        fileRead();
 
 
         Scanner input = new Scanner(System.in);
@@ -86,6 +67,30 @@ public class Initializer
 
         System.out.println("builded maze: " + maze.toString());
         return maze;
+    }
+
+    private void fileRead() throws IOException
+    {
+        String filePath = getFilePath(FILE_NAME);
+        BufferedReader reader = new BufferedReader(new FileReader(
+                filePath));
+        while (true)
+        {
+            String line = reader.readLine();
+            if (line == null)
+            {
+                break;
+            }
+            // Split line on comma.
+            String[] parts = line.split(",");
+            for (String part : parts)
+            {
+                System.out.print(part+",");
+            }
+            System.out.println();
+        }
+
+        reader.close();
     }
 
     private String getFilePath(String filename)
