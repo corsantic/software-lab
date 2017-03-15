@@ -7,6 +7,16 @@ import java.util.Random;
  */
 public class Commons
 {
+    public double format(double number)
+    {
+        return Double.parseDouble(String.format("%.1f", number));
+    }
+
+    public static int getRandomValue(int[] arr)
+    {
+        int index = rand(0, arr.length - 1);
+        return arr[index];
+    }
 
     public static int[][] createMatrix(int n, int defaultValue)
     {
@@ -37,6 +47,11 @@ public class Commons
     {
         int rand = new Random().nextInt((max - min) + 1) + min;
         return rand;
+    }
+
+    public static int random(int max)
+    {
+        return rand(0, max - 1);
     }
 
 

@@ -2,7 +2,9 @@ package entity;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Maze {
@@ -11,14 +13,19 @@ public class Maze {
     int startPoint;
     int endPoint;
 
-    Map<Integer, int[]> neighbours;
+    List<int[]> neighbours;
+
+    public Maze()
+    {
+
+    }
 
     public Maze(int n) {
         this.n = n;
-        this.neighbours = new HashMap<>();
+        this.neighbours = new ArrayList<>();
     }
 
-    public Maze(int n, int iterationCount, int startPoint, int endPoint, Map<Integer, int[]> neighbours) {
+    public Maze(int n, int iterationCount, int startPoint, int endPoint, List<int[]> neighbours) {
         this.n = n;
         this.iterationCount = iterationCount;
         this.startPoint = startPoint;
@@ -58,11 +65,13 @@ public class Maze {
         this.endPoint = endPoint;
     }
 
-    public Map<Integer, int[]> getNeighbours() {
+    public List<int[]> getNeighbours()
+    {
         return neighbours;
     }
 
-    public void setNeighbours(Map<Integer, int[]> neighbours) {
+    public void setNeighbours(List<int[]> neighbours)
+    {
         this.neighbours = neighbours;
     }
 

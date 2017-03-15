@@ -1,0 +1,13 @@
+
+R matrisini outR.txt dosyasýna, 15 puan
+Q matrisini outQ.txt dosyasýna, 20 puan
+Yolu ise outPath.txt dosyasýna yazdýrma  20 puan
+Grafiksel olarak Labirentin olusturulmasý  15 puan
+Yolun çizdirilmesi 10 puan
+Rapor 20 puan
+Son kullanýcý baslangýc ve bitisi belirleyemiyorsa -5 puan
+
+Komsuluklar input.txt dosyasýndan (verilen formatta) alýnarak iþlem yapýlmýyorsa 50 puan üzerinden,
+
+Deðiþken boyutlu labirentler icin program calýsmýyorsa 30 puan üzerinden deðerlendirilecektir.
+
