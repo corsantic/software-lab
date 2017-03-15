@@ -1,7 +1,8 @@
 import static util.Commons.toIntArray;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 
 import entity.Maze;
@@ -14,12 +15,12 @@ public class Initializer
 
     private QLearning qLearning = new QLearning();
 
-    public static void main(String[] args) throws FileNotFoundException
+    public static void main(String[] args) throws IOException
     {
         new Initializer().run(args);
     }
 
-    void run(String[] args) throws FileNotFoundException
+    void run(String[] args) throws IOException
     {
              Maze maze = buildLab();
 //        Maze maze = Constants.INPUT_33;
@@ -37,21 +38,28 @@ public class Initializer
     }
 
 
-    private Maze buildLab() throws FileNotFoundException
+    private Maze buildLab() throws IOException
     {
         String filePath = getFilePath(FILE_NAME);
-        File file = new File(filePath); // read neigbours
-
-        Scanner read =new Scanner(file);
-
-        while(read.hasNext())
+        BufferedReader reader = new BufferedReader(new FileReader(
+                filePath));
+        while (true)
         {
-            String[] tokens = read.nextLine().split(";");
-            String last = tokens[tokens.length - 1];
-            System.out.println(last);
+            String line = reader.readLine();
+            if (line == null)
+            {
+                break;
+            }
+            // Split line on comma.
+            String[] parts = line.split(",");
+            for (String part : parts)
+            {
+                System.out.print(part+",");
+            }
+            System.out.println();
         }
 
-
+        reader.close();
 
 
         Scanner input = new Scanner(System.in);
