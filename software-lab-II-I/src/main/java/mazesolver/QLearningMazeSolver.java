@@ -115,4 +115,8 @@ public class QLearningMazeSolver implements MazeSolver
         return nextStep;
     }
 
+    public void exportFiles(Maze m)
+    {
+
+    }
 }
