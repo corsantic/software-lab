@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -108,7 +109,14 @@ public class Initializer
                 int i = Integer.valueOf(itera.getText());
 
 
-                qLearningMazeSolver.exportFiles(createMaze(s, e, i));
+                try
+                {
+                    qLearningMazeSolver.exportFiles(createMaze(s, e, i));
+                }
+                catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
             }
         });
 

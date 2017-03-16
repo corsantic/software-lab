@@ -2,6 +2,8 @@ package mazesolver;
 
 import static util.Commons.random;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,8 +117,36 @@ public class QLearningMazeSolver implements MazeSolver
         return nextStep;
     }
 
-    public void exportFiles(Maze m)
+    public void exportFiles(Maze m) throws IOException
     {
+        FileWriter writeR = new FileWriter("RMatris.txt", true);
+        int[][] Rmatris = buildRMatrix(m);
+        double[][] Qmatris = buildQMatrix(m);
+        int size = m.getN();
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                writeR.write(Integer.toString(Rmatris[i][j]));
+                writeR.write(" , \t");
+            }
+            writeR.write("\r\n");
 
+        }
+        writeR.close();
+        FileWriter writeQ = new FileWriter("Qmatris.txt", true);
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                writeQ.write(Double.toString(Qmatris[i][j]));
+                writeQ.write(" , \t");
+            }
+            writeQ.write("\r\n");
+
+        }
+
+writeQ.close();
     }
 }
+
