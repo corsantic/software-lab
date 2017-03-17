@@ -1,8 +1,7 @@
 import static util.Commons.toIntArray;
+import static util.Commons.writeMatrix;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,14 +20,9 @@ import util.UIHelper;
 
 public class Initializer
 {
-    private static final String FILE_NAME = "inputs/input55.txt";
-    // input33 - start: 1 end: 7
-    // input55 - start: 2 end: 22
-    private final int MATRIX_SIZE = 20;
-    private final Color LIGHT_BLUE = new Color(176, 213, 255);
+    private static final String FILE_NAME = "inputs/input33.txt";
+
     private final Color DARK_BLUE = new Color(41, 80, 160);
-    private final Color GRAY = new Color(117, 117, 117);
-    private Color DEFAULT_BACKGROUND_COLOR = new Color(238, 238, 238);
     private QLearningMazeSolver qLearningMazeSolver = new QLearningMazeSolver();
     private UIHelper uiHelper = new UIHelper();
 
@@ -37,33 +31,35 @@ public class Initializer
         new Initializer().run(args);
     }
 
+    void test(String[] args) throws Exception
+    {
+        Maze maze = createMaze(2, 22, 3000);
+
+        qLearningMazeSolver.initialize(maze);
+
+        int[][] ints = qLearningMazeSolver.R;
+        double[][] doubles = qLearningMazeSolver.Q;
+
+
+        writeMatrix(ints);
+        writeMatrix(doubles);
+
+
+        System.out.println("\n" + qLearningMazeSolver.path);
+
+        qLearningMazeSolver.exportFiles(maze);
+    }
+
     void run(String[] args) throws Exception
     {
 
-        JFrame frame = uiHelper.createStandartJPanel();
-
-
-        GridBagConstraints gridBagConstraints = createConstraints();
-
+        JFrame frame = uiHelper.createStandardJFrame();
         JPanel vertexPanel = createMainPanel();
 
-
-        frame.setLayout(new GridBagLayout());
-
-        gridBagConstraints.anchor = GridBagConstraints.CENTER;
-
-        gridBagConstraints.gridy++;
-        frame.add(vertexPanel, gridBagConstraints);
-        gridBagConstraints.gridy++;
-        gridBagConstraints.gridwidth++;
-        gridBagConstraints.anchor = GridBagConstraints.CENTER;
-        frame.add(vertexPanel, gridBagConstraints);
-        gridBagConstraints.gridy++;
-
+        frame.add(vertexPanel);
 
         frame.pack();
         frame.setVisible(true);
-
     }
 
 
@@ -71,51 +67,45 @@ public class Initializer
     {
         JPanel panel = new JPanel();
 
-        JTextField start = uiHelper.createInput("st");
+        JTextField start = uiHelper.createInput("start");
         JTextField end = uiHelper.createInput("end");
-        JTextField itera = uiHelper.createInput("itera");
+        JTextField itera = uiHelper.createInput("iteration");
 
 
-        JButton submit = uiHelper.createStandartButton("Solve");
-        JButton exportFiles = uiHelper.createStandartButton("Export Files");
-        submit.addActionListener(new ActionListener()
+        JButton submit = uiHelper.createStandardButton("Solve");
+        JButton exportFiles = uiHelper.createStandardButton("Export Files");
+        submit.addActionListener(evt ->
         {
-            @Override
-            public void actionPerformed(ActionEvent evt)
-            {
-                int s = Integer.valueOf(start.getText());
-                int e = Integer.valueOf(end.getText());
-                int i = Integer.valueOf(itera.getText());
+            int s = Integer.valueOf(start.getText());
+            int e = Integer.valueOf(end.getText());
+            int i = Integer.valueOf(itera.getText());
 
-                try
-                {
-                    drawMaze(s, e, i);
-                }
-                catch (FileNotFoundException e1)
-                {
-                    e1.printStackTrace();
-                }
+            try
+            {
+                drawMaze(s, e, i);
+            }
+            catch (FileNotFoundException e1)
+            {
+                e1.printStackTrace();
             }
         });
 
-        exportFiles.addActionListener(new ActionListener()
+        exportFiles.addActionListener(evt ->
         {
-            @Override
-            public void actionPerformed(ActionEvent evt)
+            int s = Integer.valueOf(start.getText());
+            int e = Integer.valueOf(end.getText());
+            int i = Integer.valueOf(itera.getText());
+
+
+            try
             {
-                int s = Integer.valueOf(start.getText());
-                int e = Integer.valueOf(end.getText());
-                int i = Integer.valueOf(itera.getText());
+                qLearningMazeSolver.exportFiles(createMaze(s, e, i));
+                JOptionPane.showMessageDialog(null, "Files exported.");
 
-
-                try
-                {
-                    qLearningMazeSolver.exportFiles(createMaze(s, e, i));
-                }
-                catch (IOException e1)
-                {
-                    e1.printStackTrace();
-                }
+            }
+            catch (IOException e1)
+            {
+                e1.printStackTrace();
             }
         });
 
@@ -131,25 +121,11 @@ public class Initializer
 
     private void drawMaze(int start, int end, int iteration) throws FileNotFoundException
     {
-
         Maze maze = createMaze(start, end, iteration);
+        JFrame frame = uiHelper.createStandardJFrame();
 
-        GridBagConstraints gridBagConstraints = createConstraints();
-        JFrame frame = uiHelper.createStandartJPanel();
         JPanel vertexPanel = createVertexPanel(maze);
-
-
-        frame.setLayout(new GridBagLayout());
-
-        gridBagConstraints.anchor = GridBagConstraints.CENTER;
-
-        gridBagConstraints.gridy++;
-        frame.add(vertexPanel, gridBagConstraints);
-        gridBagConstraints.gridy++;
-        gridBagConstraints.gridwidth++;
-        gridBagConstraints.anchor = GridBagConstraints.CENTER;
-        frame.add(vertexPanel, gridBagConstraints);
-        gridBagConstraints.gridy++;
+        frame.add(vertexPanel);
 
         frame.pack();
         frame.setVisible(true);
@@ -170,7 +146,6 @@ public class Initializer
         Maze maze = new Maze();
         maze.setNeighbours(neighbours);
         maze.setN(neighbours.size());
-        //        maze.setN((int) Math.sqrt(neighbours.size()));
 
         maze.setStartPoint(start);
         maze.setEndPoint(end);
@@ -181,24 +156,24 @@ public class Initializer
 
     private JPanel createVertexPanel(Maze maze)
     {
+        qLearningMazeSolver.initialize(maze);
+        List<Integer> path = qLearningMazeSolver.path;
         int size = (int) Math.sqrt(maze.getN());
 
-        List<Integer> path = qLearningMazeSolver.findPath(maze);
-
-        JPanel vertexPanel = new JPanel();
-        vertexPanel.setLayout(new GridLayout(size, size, 0, 0));
-        vertexPanel.setBorder(new EmptyBorder(0, 20, 0, 20));
+        JPanel mazePanel = new JPanel();
+        mazePanel.setPreferredSize(new Dimension(600, 600));
+        mazePanel.setLayout(new GridLayout(size, size, 0, 0));
+        mazePanel.setBorder(new EmptyBorder(0, 20, 0, 20));
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
 
         for (int i = 0; i < maze.getN(); i++)
         {
             int[] neighbours = maze.getNeighbours().get(i);
 
-            vertexPanel.add(createPoint(size, i, neighbours, path.contains(i), i == maze.getStartPoint(), i == maze.getEndPoint()), gridBagConstraints);
+            mazePanel.add(createPoint(size, i, neighbours, path.contains(i), i == maze.getStartPoint(), i == maze.getEndPoint()), gridBagConstraints);
         }
 
-
-        return vertexPanel;
+        return mazePanel;
     }
 
     private JButton createPoint(int n, int point, int[] neighbours, boolean path, boolean start, boolean end)
@@ -233,17 +208,6 @@ public class Initializer
                 return true;
         }
         return false;
-    }
-
-
-    private GridBagConstraints createConstraints()
-    {
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = GridBagConstraints.NORTHEAST;
-        gridBagConstraints.fill = GridBagConstraints.ABOVE_BASELINE;
-        return gridBagConstraints;
     }
 
     private List<int[]> readNeighboursFromFile(String fileName) throws FileNotFoundException

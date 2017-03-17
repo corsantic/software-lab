@@ -74,6 +74,10 @@ public class Maze
         this.endPoint = endPoint;
     }
 
+    public int[] getNeigboursFromPoint(int point)
+    {
+        return neighbours.get(point);
+    }
     public List<int[]> getNeighbours()
     {
         return neighbours;

@@ -83,4 +83,4 @@ Q 3000 iterasyon sonrasi
 ===============
 
 printing path 
-2 3 8 13 18 19 24 23 22 
+2 3 8 13 18 19 24 23 22

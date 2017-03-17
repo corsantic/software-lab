@@ -5,35 +5,50 @@ import static util.Commons.random;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import entity.Maze;
 import util.Commons;
 
-public class QLearningMazeSolver implements MazeSolver
+public class QLearningMazeSolver
 {
     private static double GAMMA = 0.8;
+    public double Q[][];
+    public int R[][];
+    public List<Integer> path;
 
-    @Override
-    public List<Integer> findPath(Maze maze)
+
+    public void initialize(Maze maze)
+    {
+        buildRMatrix(maze);
+        buildQMatrix(maze);
+        buildPath(maze);
+    }
+
+
+    private void buildPath(Maze maze)
     {
         int startPoint = maze.getStartPoint();
         List<Integer> path = new ArrayList<>();
         path.add(startPoint);
 
-        double[][] Q = buildQMatrix(maze);
-
         while (startPoint != maze.getEndPoint())
         {
             int nextStep = findNextPoint(maze, Q, startPoint);
+
+            if (nextStep == -1)
+                break;
+
             path.add(nextStep);
             startPoint = nextStep;
         }
 
-        return path;
+        this.path = path;
     }
 
-    public int[][] buildRMatrix(Maze maze)
+
+    private void buildRMatrix(Maze maze)
     {
         int n = maze.getN();
         int[][] R = Commons.createMatrix(n, -1);
@@ -48,60 +63,61 @@ public class QLearningMazeSolver implements MazeSolver
         });
 
         R[maze.getEndPoint()][maze.getEndPoint()] = 100;
-        for (int j : maze.getNeighbours().get(maze.getEndPoint()))
+        for (int j : maze.getNeigboursFromPoint(maze.getEndPoint()))
         {
             R[j][maze.getEndPoint()] = 100;
         }
 
-        return R;
+        this.R = R;
     }
 
     /**
      * Q(durum,aksiyon) = R(durum,aksiyon)+γ×Max{Q(sonrakidurumlar,tumaksiyonlar)}
      * γ  ögrenme katsayısıdır ve 0 ile 1 arasında bir de ̆ger alır.
      */
-    public double[][] buildQMatrix(Maze maze)
+    private void buildQMatrix(Maze maze)
     {
-        int[][] R = buildRMatrix(maze);
+
         double[][] Q = new double[maze.getN()][maze.getN()];
 
         int x = random(maze.getN()); // random start point
 
-        fillQ(Q, R, x, maze, maze.getIterationCount());
+        fillQ(Q, R, x, maze);
 
-        return Q;
+        this.Q = Q;
     }
 
-    private void fillQ(double[][] Q, int[][] R, int x, Maze maze, int it)
+    private void fillQ(double[][] Q, int[][] R, int x, Maze maze)
     {
-
         for (int i = 0; i < maze.getIterationCount(); i++)
         {
-            int[] xNeighbours = maze.getNeighbours().get(x);
-            int y = Commons.getRandomValue(xNeighbours);
-            double max = findNeighbourWithMaxGain(maze, Q, y);
-            double num = R[x][y] + GAMMA * max;
-            Q[x][y] = num;
+            int y = 0;
+            while (R[x][y] != 100)
+            {
+                int[] xNeighbours = maze.getNeigboursFromPoint(x);
+                y = Commons.getRandomValue(xNeighbours);
+                double yNeighbourWithMaxGain = findNeighbourWithMaxGain(maze, Q, y);
+                double num = R[x][y] + GAMMA * yNeighbourWithMaxGain;
+                Q[x][y] = num;
 
-            x = y;
+                x = y;
+            }
+            //            writeMatrix(Q);
         }
-
     }
+
 
     private double findNeighbourWithMaxGain(Maze maze, double[][] Q, int y)
     {
-        double max = Double.MIN_VALUE;
-        for (int n : maze.getNeighbours().get(y))
-        {
-            max = Math.max(max, Q[y][n]);
-        }
-        return max;
+        return Arrays.stream(maze.getNeigboursFromPoint(y))
+                .mapToDouble(n -> Q[y][n])
+                .max().getAsDouble();
     }
-
 
     private int findNextPoint(Maze maze, double[][] Q, int currentPoint)
     {
-        int[] neighbours = maze.getNeighbours().get(currentPoint);
+        int[] neighbours = maze.getNeigboursFromPoint(currentPoint);
+
         double max = Double.MIN_VALUE;
         int nextStep = -1;
         for (int n : neighbours)
@@ -119,34 +135,37 @@ public class QLearningMazeSolver implements MazeSolver
 
     public void exportFiles(Maze m) throws IOException
     {
-        FileWriter writeR = new FileWriter("RMatris.txt", true);
-        int[][] Rmatris = buildRMatrix(m);
-        double[][] Qmatris = buildQMatrix(m);
+        FileWriter writeR = new FileWriter("outR.txt", false);
+
         int size = m.getN();
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
             {
-                writeR.write(Integer.toString(Rmatris[i][j]));
+                writeR.write(Integer.toString(R[i][j]));
                 writeR.write(" , \t");
             }
             writeR.write("\r\n");
 
         }
         writeR.close();
-        FileWriter writeQ = new FileWriter("Qmatris.txt", true);
+        FileWriter writeQ = new FileWriter("outQ.txt", false);
         for (int i = 0; i < size; i++)
         {
             for (int j = 0; j < size; j++)
             {
-                writeQ.write(Double.toString(Qmatris[i][j]));
+                writeQ.write(Double.toString(Q[i][j]));
                 writeQ.write(" , \t");
             }
             writeQ.write("\r\n");
 
         }
-
         writeQ.close();
+
+        FileWriter pathWriter = new FileWriter("outPath.txt", false);
+        pathWriter.write(path.toString());
+        pathWriter.close();
+
     }
 }
 

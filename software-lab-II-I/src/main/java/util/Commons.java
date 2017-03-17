@@ -2,9 +2,6 @@ package util;
 
 import java.util.Random;
 
-/**
- * Created by stuff on 3/12/2017.
- */
 public class Commons
 {
     public static int getRandomValue(int[] arr)
