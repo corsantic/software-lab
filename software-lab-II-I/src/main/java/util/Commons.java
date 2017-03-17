@@ -7,11 +7,6 @@ import java.util.Random;
  */
 public class Commons
 {
-    public double format(double number)
-    {
-        return Double.parseDouble(String.format("%.1f", number));
-    }
-
     public static int getRandomValue(int[] arr)
     {
         int index = rand(0, arr.length - 1);
@@ -54,7 +49,6 @@ public class Commons
         return rand(0, max - 1);
     }
 
-
     public static void writeMatrix(double[][] r)
     {
         int n = r.length;
@@ -78,5 +72,10 @@ public class Commons
             array[i] = Integer.parseInt(sArray[i]);
         }
         return array;
+    }
+
+    public double format(double number)
+    {
+        return Double.parseDouble(String.format("%.1f", number));
     }
 }

@@ -1,13 +1,12 @@
 package entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-public class Maze {
+public class Maze
+{
     int n;
     int iterationCount;
     int startPoint;
@@ -20,12 +19,14 @@ public class Maze {
 
     }
 
-    public Maze(int n) {
+    public Maze(int n)
+    {
         this.n = n;
         this.neighbours = new ArrayList<>();
     }
 
-    public Maze(int n, int iterationCount, int startPoint, int endPoint, List<int[]> neighbours) {
+    public Maze(int n, int iterationCount, int startPoint, int endPoint, List<int[]> neighbours)
+    {
         this.n = n;
         this.iterationCount = iterationCount;
         this.startPoint = startPoint;
@@ -33,35 +34,43 @@ public class Maze {
         this.neighbours = neighbours;
     }
 
-    public int getN() {
+    public int getN()
+    {
         return n;
     }
 
-    public void setN(int n) {
+    public void setN(int n)
+    {
         this.n = n;
     }
 
-    public int getIterationCount() {
+    public int getIterationCount()
+    {
         return iterationCount;
     }
 
-    public void setIterationCount(int iterationCount) {
+    public void setIterationCount(int iterationCount)
+    {
         this.iterationCount = iterationCount;
     }
 
-    public int getStartPoint() {
+    public int getStartPoint()
+    {
         return startPoint;
     }
 
-    public void setStartPoint(int startPoint) {
+    public void setStartPoint(int startPoint)
+    {
         this.startPoint = startPoint;
     }
 
-    public int getEndPoint() {
+    public int getEndPoint()
+    {
         return endPoint;
     }
 
-    public void setEndPoint(int endPoint) {
+    public void setEndPoint(int endPoint)
+    {
         this.endPoint = endPoint;
     }
 
@@ -76,7 +85,8 @@ public class Maze {
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return ToStringBuilder.reflectionToString(this);
     }
 }

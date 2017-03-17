@@ -21,6 +21,7 @@ import util.UIHelper;
 
 public class Initializer
 {
+    private static final String FILE_NAME = "inputs/input55.txt";
     // input33 - start: 1 end: 7
     // input55 - start: 2 end: 22
     private final int MATRIX_SIZE = 20;
@@ -28,8 +29,6 @@ public class Initializer
     private final Color DARK_BLUE = new Color(41, 80, 160);
     private final Color GRAY = new Color(117, 117, 117);
     private Color DEFAULT_BACKGROUND_COLOR = new Color(238, 238, 238);
-    private static final String FILE_NAME = "inputs/input55.txt";
-
     private QLearningMazeSolver qLearningMazeSolver = new QLearningMazeSolver();
     private UIHelper uiHelper = new UIHelper();
 

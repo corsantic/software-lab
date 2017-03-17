@@ -146,7 +146,7 @@ public class QLearningMazeSolver implements MazeSolver
 
         }
 
-writeQ.close();
+        writeQ.close();
     }
 }
 
