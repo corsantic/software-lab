@@ -1,0 +1,635 @@
+import static util.Commons.toIntArray;
+import static util.Commons.writeMatrix;
+
+import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+
+import entity.Maze;
+import mazesolver.QLearningMazeSolver;
+import util.UIHelper;
+
+
+public class Initializer
+{
+    private static final String FILE_NAME = "inputs/input33.txt";
+
+    private final Color DARK_BLUE = new Color(41, 80, 160);
+    private QLearningMazeSolver qLearningMazeSolver = new QLearningMazeSolver();
+    private UIHelper uiHelper = new UIHelper();
+
+    public static void main(String[] args) throws Exception
+    {
+        new Initializer().run(args);
+    }
+
+    void test(String[] args) throws Exception
+    {
+        Maze maze = createMaze(2, 22, 3000);
+
+        qLearningMazeSolver.initialize(maze);
+
+        int[][] ints = qLearningMazeSolver.R;
+        double[][] doubles = qLearningMazeSolver.Q;
+
+
+        writeMatrix(ints);
+        writeMatrix(doubles);
+
+
+        System.out.println("\n" + qLearningMazeSolver.path);
+
+        qLearningMazeSolver.exportFiles(maze);
+    }
+
+    void run(String[] args) throws Exception
+    {
+
+        JFrame frame = uiHelper.createStandardJFrame();
+        JPanel vertexPanel = createMainPanel();
+
+        frame.add(vertexPanel);
+
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+
+    private JPanel createMainPanel()
+    {
+        JPanel panel = new JPanel();
+
+        JTextField start = uiHelper.createInput("start");
+        JTextField end = uiHelper.createInput("end");
+        JTextField itera = uiHelper.createInput("iteration");
+
+
+        JButton submit = uiHelper.createStandardButton("Solve");
+        JButton exportFiles = uiHelper.createStandardButton("Export Files");
+        submit.addActionListener(evt ->
+        {
+            int s = Integer.valueOf(start.getText());
+            int e = Integer.valueOf(end.getText());
+            int i = Integer.valueOf(itera.getText());
+
+            try
+            {
+                drawMaze(s, e, i);
+            }
+            catch (FileNotFoundException e1)
+            {
+                e1.printStackTrace();
+            }
+        });
+
+        exportFiles.addActionListener(evt ->
+        {
+            int s = Integer.valueOf(start.getText());
+            int e = Integer.valueOf(end.getText());
+            int i = Integer.valueOf(itera.getText());
+
+
+            try
+            {
+                qLearningMazeSolver.exportFiles(createMaze(s, e, i));
+                JOptionPane.showMessageDialog(null, "Files exported.");
+
+            }
+            catch (IOException e1)
+            {
+                e1.printStackTrace();
+            }
+        });
+
+        panel.add(start);
+        panel.add(end);
+        panel.add(itera);
+        panel.add(submit);
+        panel.add(exportFiles);
+
+        return panel;
+    }
+
+
+    private void drawMaze(int start, int end, int iteration) throws FileNotFoundException
+    {
+        Maze maze = createMaze(start, end, iteration);
+        JFrame frame = uiHelper.createStandardJFrame();
+
+        JPanel vertexPanel = createVertexPanel(maze);
+        frame.add(vertexPanel);
+
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+
+    private Maze createMaze(int start, int end, int iteration)
+    {
+        List<int[]> neighbours = null;
+        try
+        {
+            neighbours = readNeighboursFromFile(FILE_NAME);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        Maze maze = new Maze();
+        maze.setNeighbours(neighbours);
+        maze.setN(neighbours.size());
+
+        maze.setStartPoint(start);
+        maze.setEndPoint(end);
+        maze.setIterationCount(iteration);
+        return maze;
+    }
+
+
+    private JPanel createVertexPanel(Maze maze)
+    {
+        qLearningMazeSolver.initialize(maze);
+        List<Integer> path = qLearningMazeSolver.path;
+        int size = (int) Math.sqrt(maze.getN());
+
+        JPanel mazePanel = new JPanel();
+        mazePanel.setPreferredSize(new Dimension(600, 600));
+        mazePanel.setLayout(new GridLayout(size, size, 0, 0));
+        mazePanel.setBorder(new EmptyBorder(0, 20, 0, 20));
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+
+        for (int i = 0; i < maze.getN(); i++)
+        {
+            int[] neighbours = maze.getNeighbours().get(i);
+
+            mazePanel.add(createPoint(size, i, neighbours, path.contains(i), i == maze.getStartPoint(), i == maze.getEndPoint()), gridBagConstraints);
+        }
+
+        return mazePanel;
+    }
+
+    private JButton createPoint(int n, int point, int[] neighbours, boolean path, boolean start, boolean end)
+    {
+
+        int borderThickness = 3;
+        int left = start || contain(point - 1, neighbours) ? 0 : borderThickness;
+        int right = end || contain(point + 1, neighbours) ? 0 : borderThickness;
+        int bottom = end || contain(point + n, neighbours) ? 0 : borderThickness;
+        int top = start || contain(point - n, neighbours) ? 0 : borderThickness;
+
+
+        Font font = new Font("Helvetica", Font.PLAIN, 30);
+
+        Border border = BorderFactory.createMatteBorder(top, left, bottom, right, Color.BLACK);
+
+
+        JButton po = new JButton(path ? "*" : "");
+        po.setFont(font);
+        po.setPreferredSize(new Dimension(100, 100));
+        po.setForeground(DARK_BLUE);
+        po.setHorizontalAlignment(JLabel.CENTER);
+        po.setBorder(border);
+        return po;
+    }
+
+    private boolean contain(int x, int[] vals)
+    {
+        for (int val : vals)
+        {
+            if (val == x)
+                return true;
+        }
+        return false;
+    }
+
+    private List<int[]> readNeighboursFromFile(String fileName) throws FileNotFoundException
+    {
+        List<int[]> neigbours = new ArrayList<>();
+        File file = new File(getFilePath(fileName));
+
+        Scanner read = new Scanner(file);
+
+        while (read.hasNextLine())
+        {
+            String[] neigs = read.nextLine().split(",");
+            neigbours.add(toIntArray(neigs));
+        }
+
+        return neigbours;
+    }
+
+
+    private String getFilePath(String filename)
+    {
+        ClassLoader loader = getClass().getClassLoader();
+        return loader.getResource(filename).getFile();
+    }
+}
+
+package entity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+public class Maze
+{
+    int n;
+    int iterationCount;
+    int startPoint;
+    int endPoint;
+
+    List<int[]> neighbours;
+
+    public Maze()
+    {
+
+    }
+
+    public Maze(int n)
+    {
+        this.n = n;
+        this.neighbours = new ArrayList<>();
+    }
+
+    public Maze(int n, int iterationCount, int startPoint, int endPoint, List<int[]> neighbours)
+    {
+        this.n = n;
+        this.iterationCount = iterationCount;
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
+        this.neighbours = neighbours;
+    }
+
+    public int getN()
+    {
+        return n;
+    }
+
+    public void setN(int n)
+    {
+        this.n = n;
+    }
+
+    public int getIterationCount()
+    {
+        return iterationCount;
+    }
+
+    public void setIterationCount(int iterationCount)
+    {
+        this.iterationCount = iterationCount;
+    }
+
+    public int getStartPoint()
+    {
+        return startPoint;
+    }
+
+    public void setStartPoint(int startPoint)
+    {
+        this.startPoint = startPoint;
+    }
+
+    public int getEndPoint()
+    {
+        return endPoint;
+    }
+
+    public void setEndPoint(int endPoint)
+    {
+        this.endPoint = endPoint;
+    }
+
+    public int[] getNeigboursFromPoint(int point)
+    {
+        return neighbours.get(point);
+    }
+    public List<int[]> getNeighbours()
+    {
+        return neighbours;
+    }
+
+    public void setNeighbours(List<int[]> neighbours)
+    {
+        this.neighbours = neighbours;
+    }
+
+    @Override
+    public String toString()
+    {
+        return ToStringBuilder.reflectionToString(this);
+    }
+}
+package mazesolver;
+
+import static util.Commons.random;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import entity.Maze;
+import util.Commons;
+
+public class QLearningMazeSolver
+{
+    private static double GAMMA = 0.8;
+    public double Q[][];
+    public int R[][];
+    public List<Integer> path;
+
+
+    public void initialize(Maze maze)
+    {
+        buildRMatrix(maze);
+        buildQMatrix(maze);
+        buildPath(maze);
+    }
+
+
+    private void buildPath(Maze maze)
+    {
+        int startPoint = maze.getStartPoint();
+        List<Integer> path = new ArrayList<>();
+        path.add(startPoint);
+
+        while (startPoint != maze.getEndPoint())
+        {
+            int nextStep = findNextPoint(maze, Q, startPoint);
+
+            if (nextStep == -1)
+                break;
+
+            path.add(nextStep);
+            startPoint = nextStep;
+        }
+
+        this.path = path;
+    }
+
+
+    private void buildRMatrix(Maze maze)
+    {
+        int n = maze.getN();
+        int[][] R = Commons.createMatrix(n, -1);
+
+        maze.getNeighbours().forEach((neighbours) ->
+        {
+            for (int j : neighbours)
+            {
+                int index = maze.getNeighbours().indexOf(neighbours);
+                R[index][j] = 0;
+            }
+        });
+
+        R[maze.getEndPoint()][maze.getEndPoint()] = 100;
+        for (int j : maze.getNeigboursFromPoint(maze.getEndPoint()))
+        {
+            R[j][maze.getEndPoint()] = 100;
+        }
+
+        this.R = R;
+    }
+
+    /**
+     * Q(durum,aksiyon) = R(durum,aksiyon)+γ×Max{Q(sonrakidurumlar,tumaksiyonlar)}
+     * γ  ögrenme katsayısıdır ve 0 ile 1 arasında bir de ̆ger alır.
+     */
+    private void buildQMatrix(Maze maze)
+    {
+
+        double[][] Q = new double[maze.getN()][maze.getN()];
+
+        int x = random(maze.getN()); // random start point
+
+        fillQ(Q, R, x, maze);
+
+        this.Q = Q;
+    }
+
+    private void fillQ(double[][] Q, int[][] R, int x, Maze maze)
+    {
+        for (int i = 0; i < maze.getIterationCount(); i++)
+        {
+            int y = 0;
+            while (R[x][y] != 100)
+            {
+                int[] xNeighbours = maze.getNeigboursFromPoint(x);
+                y = Commons.getRandomValue(xNeighbours);
+                double yNeighbourWithMaxGain = findNeighbourWithMaxGain(maze, Q, y);
+                double num = R[x][y] + GAMMA * yNeighbourWithMaxGain;
+                Q[x][y] = num;
+
+                x = y;
+            }
+            //            writeMatrix(Q);
+        }
+    }
+
+
+    private double findNeighbourWithMaxGain(Maze maze, double[][] Q, int y)
+    {
+        return Arrays.stream(maze.getNeigboursFromPoint(y))
+                .mapToDouble(n -> Q[y][n])
+                .max().getAsDouble();
+    }
+
+    private int findNextPoint(Maze maze, double[][] Q, int currentPoint)
+    {
+        int[] neighbours = maze.getNeigboursFromPoint(currentPoint);
+
+        double max = Double.MIN_VALUE;
+        int nextStep = -1;
+        for (int n : neighbours)
+        {
+            double gain = Q[currentPoint][n];
+            if (gain >= max)
+            {
+                nextStep = n;
+                max = gain;
+            }
+        }
+
+        return nextStep;
+    }
+
+    public void exportFiles(Maze m) throws IOException
+    {
+        FileWriter writeR = new FileWriter("outR.txt", false);
+
+        int size = m.getN();
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                writeR.write(Integer.toString(R[i][j]));
+                writeR.write(" , \t");
+            }
+            writeR.write("\r\n");
+
+        }
+        writeR.close();
+        FileWriter writeQ = new FileWriter("outQ.txt", false);
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < size; j++)
+            {
+                writeQ.write(Double.toString(Q[i][j]));
+                writeQ.write(" , \t");
+            }
+            writeQ.write("\r\n");
+
+        }
+        writeQ.close();
+
+        FileWriter pathWriter = new FileWriter("outPath.txt", false);
+        pathWriter.write(path.toString());
+        pathWriter.close();
+
+    }
+}
+
+package util;
+
+import java.util.Random;
+
+public class Commons
+{
+    public static int getRandomValue(int[] arr)
+    {
+        int index = rand(0, arr.length - 1);
+        return arr[index];
+    }
+
+    public static int[][] createMatrix(int n, int defaultValue)
+    {
+        int[][] d = new int[n][n];
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                d[i][j] = defaultValue;
+
+        return d;
+    }
+
+    public static void writeMatrix(int[][] r)
+    {
+        int n = r.length;
+        for (int i = 0; i < n; i++)
+
+        {
+            System.out.println("");
+            for (int j = 0; j < n; j++)
+            {
+                System.out.print(r[i][j] + " ");
+
+            }
+        }
+    }
+
+    public static int rand(int min, int max)
+    {
+        int rand = new Random().nextInt((max - min) + 1) + min;
+        return rand;
+    }
+
+    public static int random(int max)
+    {
+        return rand(0, max - 1);
+    }
+
+    public static void writeMatrix(double[][] r)
+    {
+        int n = r.length;
+        for (int i = 0; i < n; i++)
+
+        {
+            System.out.println("");
+            for (int j = 0; j < n; j++)
+            {
+                System.out.print(r[i][j] + " ");
+
+            }
+        }
+    }
+
+    public static int[] toIntArray(String[] sArray)
+    {
+        int[] array = new int[sArray.length];
+        for (int i = 0; i < sArray.length; i++)
+        {
+            array[i] = Integer.parseInt(sArray[i]);
+        }
+        return array;
+    }
+
+    public double format(double number)
+    {
+        return Double.parseDouble(String.format("%.1f", number));
+    }
+}
+package util;
+
+import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+
+import javax.swing.*;
+
+public class UIHelper
+{
+    public JButton createStandardButton(String solve)
+    {
+        JButton jButton = new JButton(solve);
+        jButton.setPreferredSize(new Dimension(100, 50));
+        return jButton;
+    }
+
+    public JTextField createInput(String st)
+    {
+        JTextField jTextField = new JTextField(st);
+        jTextField.setPreferredSize(new Dimension(100, 50));
+        jTextField.addFocusListener(new FocusListener()
+        {
+            @Override
+            public void focusGained(FocusEvent e)
+            {
+                if (jTextField.getText().equals(st))
+                {
+                    jTextField.setText("");
+                    jTextField.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e)
+            {
+                if (jTextField.getText().isEmpty())
+                {
+                    jTextField.setForeground(Color.GRAY);
+                    jTextField.setText(st);
+                }
+            }
+        });
+
+        return jTextField;
+    }
+
+    public JFrame createStandardJFrame()
+    {
+        JFrame frame = new JFrame("Maze Solver");
+        frame.setPreferredSize(new Dimension(800, 800));
+        return frame;
+    }
+}
