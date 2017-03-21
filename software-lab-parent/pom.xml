@@ -10,6 +10,7 @@
 
 	<modules>
         <module>../software-lab-II-I/</module>
+        <module>../software-lab-II-II/</module>
     </modules>
 
     <build>
