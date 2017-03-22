@@ -55,7 +55,7 @@ public class Commons
             System.out.println("");
             for (int j = 0; j < n; j++)
             {
-                System.out.print(r[i][j] + " ");
+                System.out.print(Commons.format(r[i][j]) + " ");
 
             }
         }
@@ -71,8 +71,8 @@ public class Commons
         return array;
     }
 
-    public double format(double number)
+    public static String format(double number)
     {
-        return Double.parseDouble(String.format("%.1f", number));
+        return String.format("%.1f", number);
     }
 }

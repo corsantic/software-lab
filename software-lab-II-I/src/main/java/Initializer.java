@@ -20,7 +20,7 @@ import util.UIHelper;
 
 public class Initializer
 {
-    private static final String FILE_NAME = "inputs/input33.txt";
+    private static final String FILE_NAME = "inputs/input55.txt";
 
     private final Color DARK_BLUE = new Color(41, 80, 160);
     private QLearningMazeSolver qLearningMazeSolver = new QLearningMazeSolver();
@@ -28,7 +28,7 @@ public class Initializer
 
     public static void main(String[] args) throws Exception
     {
-        new Initializer().run(args);
+        new Initializer().test(args);
     }
 
     void test(String[] args) throws Exception

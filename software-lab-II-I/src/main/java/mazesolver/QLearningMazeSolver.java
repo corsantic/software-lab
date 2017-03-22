@@ -35,7 +35,7 @@ public class QLearningMazeSolver
 
         while (startPoint != maze.getEndPoint())
         {
-            int nextStep = findNextPoint(maze, Q, startPoint);
+            int nextStep = findNextPoint(maze, startPoint);
 
             if (nextStep == -1)
                 break;
@@ -51,7 +51,7 @@ public class QLearningMazeSolver
     private void buildRMatrix(Maze maze)
     {
         int n = maze.getN();
-        int[][] R = Commons.createMatrix(n, -1);
+        R = Commons.createMatrix(n, -1);
 
         maze.getNeighbours().forEach((neighbours) ->
         {
@@ -67,8 +67,6 @@ public class QLearningMazeSolver
         {
             R[j][maze.getEndPoint()] = 100;
         }
-
-        this.R = R;
     }
 
     /**
@@ -77,44 +75,41 @@ public class QLearningMazeSolver
      */
     private void buildQMatrix(Maze maze)
     {
-
-        double[][] Q = new double[maze.getN()][maze.getN()];
+        Q = new double[maze.getN()][maze.getN()];
 
         int x = random(maze.getN()); // random start point
 
-        fillQ(Q, R, x, maze);
-
-        this.Q = Q;
+        fillQ(x, maze);
     }
 
-    private void fillQ(double[][] Q, int[][] R, int x, Maze maze)
+    private void fillQ(int x, Maze maze)
     {
         for (int i = 0; i < maze.getIterationCount(); i++)
         {
             int y = 0;
-            while (R[x][y] != 100)
-            {
+//            while (R[x][y] != 100)
+//            {
                 int[] xNeighbours = maze.getNeigboursFromPoint(x);
                 y = Commons.getRandomValue(xNeighbours);
-                double yNeighbourWithMaxGain = findNeighbourWithMaxGain(maze, Q, y);
+                double yNeighbourWithMaxGain = findNeighbourWithMaxGain(maze, y);
                 double num = R[x][y] + GAMMA * yNeighbourWithMaxGain;
                 Q[x][y] = num;
 
                 x = y;
-            }
+//            }
             //            writeMatrix(Q);
         }
     }
 
 
-    private double findNeighbourWithMaxGain(Maze maze, double[][] Q, int y)
+    private double findNeighbourWithMaxGain(Maze maze,  int y)
     {
         return Arrays.stream(maze.getNeigboursFromPoint(y))
                 .mapToDouble(n -> Q[y][n])
                 .max().getAsDouble();
     }
 
-    private int findNextPoint(Maze maze, double[][] Q, int currentPoint)
+    private int findNextPoint(Maze maze, int currentPoint)
     {
         int[] neighbours = maze.getNeigboursFromPoint(currentPoint);
 
@@ -154,7 +149,7 @@ public class QLearningMazeSolver
         {
             for (int j = 0; j < size; j++)
             {
-                writeQ.write(Double.toString(Q[i][j]));
+                writeQ.write(Commons.format(Q[i][j]));
                 writeQ.write(" , \t");
             }
             writeQ.write("\r\n");
