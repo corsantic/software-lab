@@ -7,7 +7,11 @@ public class Initializer
 
     void run()
     {
-        System.out.println("gene mi c4.5? ");
+        Thread_Read threadRead=new Thread_Read();
+        Thread_Write threadWrite=new Thread_Write();
+        threadRead.start();
+        threadWrite.start();
+
     }
 }
 
