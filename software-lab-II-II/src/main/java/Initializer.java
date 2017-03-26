@@ -1,3 +1,8 @@
+import java.util.List;
+
+import entity.Patient;
+import util.FileHelper;
+
 public class Initializer
 {
     public static void main(String[] args)
@@ -5,9 +10,13 @@ public class Initializer
         new Initializer().run();
     }
 
-    void run()
+    private FileHelper fileHelper = new FileHelper();
+
+    private void run()
     {
-        System.out.println("gene mi c4.5? ");
+        List<Patient> patients = fileHelper.readAllPatients();
+        System.out.println("All patients");
+        patients.forEach(System.out::println);
     }
 }
 
