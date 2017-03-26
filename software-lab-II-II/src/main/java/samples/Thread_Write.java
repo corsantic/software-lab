@@ -1,3 +1,5 @@
+package samples;
+
 /**
  *
  * Thread Example multi

@@ -5,8 +5,6 @@ package util;
  */
 public class Commons
 {
-
-
     public static int[] toIntArray(String[] sArray)
     {
         int[] array = new int[sArray.length];
