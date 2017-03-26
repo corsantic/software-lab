@@ -32,15 +32,9 @@ public class FileHelper
 
             while (read.hasNextLine())
             {
-                Patient patient = new Patient();
                 String[] attrs = read.nextLine().split(ATTRIBUTE_SEPERATOR);
 
-                patient.setAgeOfAtTimeOfOperation(Integer.valueOf(attrs[0]));
-                patient.setYearOfOperation(Integer.valueOf(attrs[1]));
-                patient.setPositiveAxillaryNodesCount(Integer.valueOf(attrs[2]));
-                patient.setSurvivalStatus(survivalStatusFromVal(Integer.valueOf(attrs[3])));
-
-                patients.add(patient);
+                patients.add(buildPatientFromAttributes(attrs));
             }
 
         }
@@ -50,6 +44,16 @@ public class FileHelper
         }
 
         return patients;
+    }
+
+    private Patient buildPatientFromAttributes(String[] attrs)
+    {
+        Patient patient = new Patient();
+        patient.setAgeOfAtTimeOfOperation(Integer.valueOf(attrs[0]));
+        patient.setYearOfOperation(Integer.valueOf(attrs[1]));
+        patient.setPositiveAxillaryNodesCount(Integer.valueOf(attrs[2]));
+        patient.setSurvivalStatus(survivalStatusFromVal(Integer.valueOf(attrs[3])));
+        return patient;
     }
 
 
