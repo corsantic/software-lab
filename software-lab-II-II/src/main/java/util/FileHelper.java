@@ -3,6 +3,7 @@ package util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -59,11 +60,8 @@ public class FileHelper
 
     private SurvivalStatus survivalStatusFromVal(int val)
     {
-        for (SurvivalStatus status : SurvivalStatus.values())
-        {
-            if (status.getVal() == val)
-                return status;
-        }
-        return null;
+        return Arrays.stream(SurvivalStatus.values())
+                .filter(s -> s.getVal() == val)
+                .findFirst().get();
     }
 }
