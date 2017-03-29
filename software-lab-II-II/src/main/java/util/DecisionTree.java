@@ -2,6 +2,7 @@ package util;
 
 import static util.Commons.log2;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,10 +35,12 @@ public class DecisionTree
 
     private void test()
     {
-        Integer valueWithMaxGain = returnMaxGainValue(AttributeName.AGE_OF_AT_TIME_OF_OPERATION);
-        double aa = entropy(AttributeName.AGE_OF_AT_TIME_OF_OPERATION);
-        System.out.println(aa);
-
+        System.out.println("Entropy: " + entropy(patientList));
+        for (AttributeName attributeName : AttributeName.values())
+        {
+            double gain = gain(attributeName);
+            System.out.println("gain -- " + attributeName + " --- " + gain);
+        }
     }
 
     private int returnMaxGainValue(AttributeName attributeName)
@@ -45,34 +48,41 @@ public class DecisionTree
         List<Integer> values = uniqueValueList(attributeName);
         return values.stream().reduce((x, y) ->
         {
-            int gainX = gain(attributeName, x);
-            int gainY = gain(attributeName, y);
+            double gainX = gain(attributeName);
+            double gainY = gain(attributeName);
             return gainX > gainY ? x : y;
         }).get();
     }
 
 
-    private static double entropy(AttributeName s)
+    private static double entropy(List<Patient> patients)
     {
-        List<Integer> is = uniqueValueList(s);
-
-        return is.stream().mapToDouble(val ->
-        {
-            double allPossibilities = is.size();
-            long l = countAttributeValue(s, val);
-            double sum = - l / allPossibilities * log2(l / allPossibilities);
-            return sum;
-        }).sum();
+        return Arrays.stream(new int[]{1, 2})
+                .mapToDouble((x) ->
+                {
+                    long l = countAttributeValue(AttributeName.SURVIVAL_STATUS, x);
+                    double allPos = patients.size();
+                    return -l / allPos * log2(l / allPos);
+                }).sum();
     }
 
 
-    private static int gain(AttributeName s, int a)
+    private static double gain(AttributeName attributeName)
     {
-        long sum = 0;
+        List<Integer> is = uniqueValueList(attributeName);
 
+        double sum = is.stream().mapToDouble(val ->
+        {
+            double allPossibilities = is.size();
+            long l = countAttributeValue(attributeName, val);
 
-        //        return entropy(s) - sum;
-        return 0;
+            List<Patient> subset = getPatientsThatValue(attributeName, val);
+
+            double result = l / allPossibilities * entropy(subset);
+
+            return result;
+        }).sum();
+        return entropy(patientList) - sum;
     }
 
 
@@ -91,6 +101,13 @@ public class DecisionTree
     private static long countUniqueAttributeValue(AttributeName name) // m: attribute icin kac farkli deger var
     {
         return uniqueValueList(name).size();
+    }
+
+    private static List<Patient> getPatientsThatValue(AttributeName name, int value) // m
+    {
+        return patientList.stream()
+                .filter(patient -> patient.getAttributeValue(name).equals(String.valueOf(value)))
+                .collect(Collectors.toList());
     }
 
     private static List<Integer> uniqueValueList(AttributeName name) // m
