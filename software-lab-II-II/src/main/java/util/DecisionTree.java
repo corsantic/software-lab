@@ -35,25 +35,27 @@ public class DecisionTree
 
     private void test()
     {
-        System.out.println("Entropy: " + entropy(patientList));
+        AttributeName maxGainAttribute = getMaxGain();
+
+        System.out.println(maxGainAttribute + "   >  ");
+    }
+
+    private AttributeName getMaxGain()
+    {
+        AttributeName max = AttributeName.SURVIVAL_STATUS;
+        double maxGain = 0;
         for (AttributeName attributeName : AttributeName.values())
         {
             double gain = gain(attributeName);
-            System.out.println("gain -- " + attributeName + " --- " + gain);
+            if (gain > maxGain)
+            {
+                maxGain = gain;
+                max = attributeName;
+            }
         }
-    }
 
-    private int returnMaxGainValue(AttributeName attributeName)
-    {
-        List<Integer> values = uniqueValueList(attributeName);
-        return values.stream().reduce((x, y) ->
-        {
-            double gainX = gain(attributeName);
-            double gainY = gain(attributeName);
-            return gainX > gainY ? x : y;
-        }).get();
+        return max;
     }
-
 
     private static double entropy(List<Patient> patients)
     {
