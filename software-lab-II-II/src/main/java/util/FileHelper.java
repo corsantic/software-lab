@@ -3,16 +3,15 @@ package util;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 import entity.Patient;
-import entity.Patient.SurvivalStatus;
+import entity.AttributeName;
 
 /**
- *  file operations is here
- *  - write or reading
+ * file operations is here
+ * - write or reading
  */
 
 public class FileHelper
@@ -49,19 +48,14 @@ public class FileHelper
 
     private Patient buildPatientFromAttributes(String[] attrs)
     {
+        AttributeName[] values = AttributeName.values();
         Patient patient = new Patient();
-        patient.setAgeOfAtTimeOfOperation(Integer.valueOf(attrs[0]));
-        patient.setYearOfOperation(Integer.valueOf(attrs[1]));
-        patient.setPositiveAxillaryNodesCount(Integer.valueOf(attrs[2]));
-        patient.setSurvivalStatus(survivalStatusFromVal(Integer.valueOf(attrs[3])));
+
+        for (int i = 0; i < values.length; i++)
+        {
+            patient.getAttributes().put(values[i], attrs[i]);
+        }
+
         return patient;
-    }
-
-
-    private SurvivalStatus survivalStatusFromVal(int val)
-    {
-        return Arrays.stream(SurvivalStatus.values())
-                .filter(s -> s.getVal() == val)
-                .findFirst().get();
     }
 }
