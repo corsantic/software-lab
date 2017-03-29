@@ -1,5 +1,7 @@
 package util;
 
+import static util.Commons.log2;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,56 +32,68 @@ public class DecisionTree
         new DecisionTree().test();
     }
 
-    void test()
+    private void test()
     {
-        long s = countAttributeValueCount(AttributeName.SURVIVAL_STATUS,  "2");
-        System.out.println(s);
-        System.out.println("entropy:"+entropy(AttributeName.AGE_OF_AT_TIME_OF_OPERATION));
+        Integer valueWithMaxGain = returnMaxGainValue(AttributeName.AGE_OF_AT_TIME_OF_OPERATION);
+        double aa = entropy(AttributeName.AGE_OF_AT_TIME_OF_OPERATION);
+        System.out.println(aa);
 
+    }
+
+    private int returnMaxGainValue(AttributeName attributeName)
+    {
+        List<Integer> values = uniqueValueList(attributeName);
+        return values.stream().reduce((x, y) ->
+        {
+            int gainX = gain(attributeName, x);
+            int gainY = gain(attributeName, y);
+            return gainX > gainY ? x : y;
+        }).get();
     }
 
 
     private static double entropy(AttributeName s)
     {
-        //entropy =lgn
-      double sum=0;
-   sum=Commons.log2(countUniqueAttributeValueCount(s));
+        List<Integer> is = uniqueValueList(s);
 
-
-        return sum;
+        return is.stream().mapToDouble(val ->
+        {
+            double allPossibilities = is.size();
+            long l = countAttributeValue(s, val);
+            double sum = - l / allPossibilities * log2(l / allPossibilities);
+            return sum;
+        }).sum();
     }
 
 
-
-
-    private static long gain(int s, int a)
+    private static int gain(AttributeName s, int a)
     {
         long sum = 0;
 
 
-//        return entropy(s) - sum;
-        return s;
+        //        return entropy(s) - sum;
+        return 0;
     }
 
 
     /**
      * bu deger kac kez kullanilmis
      */
-    private long countAttributeValueCount(AttributeName name, String val)
+    private static long countAttributeValue(AttributeName name, int val)
     {
         return patientList.stream()
                 .filter(patient -> patient.getAttributes().containsKey(name))
-                .map(patient -> patient.getAttributeValue(name))
+                .map(patient -> Integer.valueOf(patient.getAttributeValue(name)))
                 .filter(value -> value.equals(val))
                 .count();
     }
 
-    private static long countUniqueAttributeValueCount(AttributeName name) // m: attribute icin kac farkli deger var
+    private static long countUniqueAttributeValue(AttributeName name) // m: attribute icin kac farkli deger var
     {
-        return countUniqueValueList(name).size();
+        return uniqueValueList(name).size();
     }
 
-    private static List<Integer> countUniqueValueList(AttributeName name) // m
+    private static List<Integer> uniqueValueList(AttributeName name) // m
     {
         return patientList.stream()
                 .filter(patient -> patient.getAttributes().containsKey(name))
