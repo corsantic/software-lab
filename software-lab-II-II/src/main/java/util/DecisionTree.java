@@ -22,8 +22,8 @@ import entity.Patient;
  */
 public class DecisionTree
 {
-    private FileHelper fileHelper = new FileHelper();
-    private List<Patient> patientList = fileHelper.readAllPatients();
+    private static FileHelper fileHelper = new FileHelper();
+    private static List<Patient> patientList = fileHelper.readAllPatients();
 
     public static void main(String[] args)
     {
@@ -34,19 +34,28 @@ public class DecisionTree
     {
         long s = countAttributeValueCount(AttributeName.SURVIVAL_STATUS,  "2");
         System.out.println(s);
+        System.out.println("entropy:"+entropy(AttributeName.AGE_OF_AT_TIME_OF_OPERATION));
+
     }
 
 
-    private static long entropy(AttributeName s)
+    private static double entropy(AttributeName s)
     {
+        //entropy =lgn
+      double sum=0;
+   sum=Commons.log2(countUniqueAttributeValueCount(s));
 
 
-        return 0;
+        return sum;
     }
+
+
+
 
     private static long gain(int s, int a)
     {
         long sum = 0;
+
 
 //        return entropy(s) - sum;
         return s;
@@ -65,12 +74,12 @@ public class DecisionTree
                 .count();
     }
 
-    private long countUniqueAttributeValueCount(AttributeName name) // m: attribute icin kac farkli deger var
+    private static long countUniqueAttributeValueCount(AttributeName name) // m: attribute icin kac farkli deger var
     {
         return countUniqueValueList(name).size();
     }
 
-    private List<Integer> countUniqueValueList(AttributeName name) // m
+    private static List<Integer> countUniqueValueList(AttributeName name) // m
     {
         return patientList.stream()
                 .filter(patient -> patient.getAttributes().containsKey(name))
