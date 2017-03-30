@@ -7,14 +7,14 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class Patient
 {
-    Map<AttributeName, String> attributes = new HashMap<>();
+    Map<String, String> attributes = new HashMap<>();
 
-    public String getAttributeValue(AttributeName attrName)
+    public String getAttributeValue(String attrName)
     {
         return attributes.get(attrName);
     }
 
-    public Map<AttributeName, String> getAttributes()
+    public Map<String, String> getAttributes()
     {
         return attributes;
     }

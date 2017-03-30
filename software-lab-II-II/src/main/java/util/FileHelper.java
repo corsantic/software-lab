@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import entity.Patient;
-import entity.AttributeName;
 
 /**
  * file operations is here
@@ -48,12 +47,11 @@ public class FileHelper
 
     private Patient buildPatientFromAttributes(String[] attrs)
     {
-        AttributeName[] values = AttributeName.values();
         Patient patient = new Patient();
 
-        for (int i = 0; i < values.length; i++)
+        for (int i = 0; i < DecisionTreeMaker.ATTRIBUTES.size(); i++)
         {
-            patient.getAttributes().put(values[i], attrs[i]);
+            patient.getAttributes().put(DecisionTreeMaker.ATTRIBUTES.get(i), attrs[i]);
         }
 
         return patient;

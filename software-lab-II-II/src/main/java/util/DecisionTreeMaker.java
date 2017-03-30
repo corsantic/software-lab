@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import entity.AttributeName;
 import entity.Patient;
 
 /**
@@ -23,28 +22,34 @@ import entity.Patient;
  * @Pr(Ai) – frequency of cases that have Ai value in S
  * @E(SAi) – subset of S with items that have Ai value
  */
-public class DecisionTree
+public class DecisionTreeMaker
 {
+    public static List<String> ATTRIBUTES = Arrays
+            .asList("AGE_OF_AT_TIME_OF_OPERATION",
+                    "POSITIVE_AXILLARY_NODES_COUNT",
+                    "YEAR_OF_OPERATION",
+                    "SURVIVAL_STATUS");
+
     private static FileHelper fileHelper = new FileHelper();
     private static List<Patient> patientList = fileHelper.readAllPatients();
 
     public static void main(String[] args)
     {
-        new DecisionTree().test();
+        new DecisionTreeMaker().test();
     }
 
     private void test()
     {
-        AttributeName maxGainAttribute = getMaxGain();
+        String maxGainAttribute = getMaxGain();
 
         System.out.println(maxGainAttribute + "   >  ");
     }
 
-    private AttributeName getMaxGain()
+    private String getMaxGain()
     {
-        AttributeName max = AttributeName.SURVIVAL_STATUS;
+        String max = "";
         double maxGain = 0;
-        for (AttributeName attributeName : AttributeName.values())
+        for (String attributeName : ATTRIBUTES)
         {
             double gain = gain(attributeName);
             if (gain > maxGain)
@@ -57,19 +62,34 @@ public class DecisionTree
         return max;
     }
 
+
+    private static void findThreSholdWithMaxGain(String attrName, int... values)
+    {
+
+
+    }
+
+
+    private static double findGain(List<Patient> patients, String attrName, int value)
+    {
+        //        patients.stream().filter(x -> {  });
+
+        return 0;
+    }
+
     private static double entropy(List<Patient> patients)
     {
         return Arrays.stream(new int[]{1, 2})
                 .mapToDouble((x) ->
                 {
-                    long l = countAttributeValue(AttributeName.SURVIVAL_STATUS, x);
+                    long l = countAttributeValue("SURVIVAL_STATUS", x);
                     double allPos = patients.size();
                     return -l / allPos * log2(l / allPos);
                 }).sum();
     }
 
 
-    private static double gain(AttributeName attributeName)
+    private static double gain(String attributeName)
     {
         List<Integer> is = uniqueValueList(attributeName);
 
@@ -84,6 +104,7 @@ public class DecisionTree
 
             return result;
         }).sum();
+
         return entropy(patientList) - sum;
     }
 
@@ -91,7 +112,7 @@ public class DecisionTree
     /**
      * bu deger kac kez kullanilmis
      */
-    private static long countAttributeValue(AttributeName name, int val)
+    private static long countAttributeValue(String name, int val)
     {
         return patientList.stream()
                 .filter(patient -> patient.getAttributes().containsKey(name))
@@ -100,19 +121,19 @@ public class DecisionTree
                 .count();
     }
 
-    private static long countUniqueAttributeValue(AttributeName name) // m: attribute icin kac farkli deger var
+    private static long countUniqueAttributeValue(String name) // m: attribute icin kac farkli deger var
     {
         return uniqueValueList(name).size();
     }
 
-    private static List<Patient> getPatientsThatValue(AttributeName name, int value) // m
+    private static List<Patient> getPatientsThatValue(String name, int value) // m
     {
         return patientList.stream()
                 .filter(patient -> patient.getAttributeValue(name).equals(String.valueOf(value)))
                 .collect(Collectors.toList());
     }
 
-    private static List<Integer> uniqueValueList(AttributeName name) // m
+    private static List<Integer> uniqueValueList(String name) // m
     {
         return patientList.stream()
                 .filter(patient -> patient.getAttributes().containsKey(name))
