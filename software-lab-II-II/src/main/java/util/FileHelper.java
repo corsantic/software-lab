@@ -1,5 +1,7 @@
 package util;
 
+import static util.Constants.ATTRIBUTES;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -49,9 +51,9 @@ public class FileHelper
     {
         Patient patient = new Patient();
 
-        for (int i = 0; i < DecisionTreeMaker.ATTRIBUTES.size(); i++)
+        for (int i = 0; i < ATTRIBUTES.size(); i++)
         {
-            patient.getAttributes().put(DecisionTreeMaker.ATTRIBUTES.get(i), attrs[i]);
+            patient.getAttributes().put(ATTRIBUTES.get(i), attrs[i]);
         }
 
         return patient;

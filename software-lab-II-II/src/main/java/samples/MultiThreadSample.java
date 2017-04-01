@@ -6,6 +6,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class MultiThreadSample
 {
@@ -22,6 +24,8 @@ public class MultiThreadSample
 
         System.out.println("process done " + (end - start) + " ms");
     }
+
+
 
     private void invokeAll() throws InterruptedException
     {
