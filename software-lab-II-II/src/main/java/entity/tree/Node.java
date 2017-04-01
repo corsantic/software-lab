@@ -20,13 +20,15 @@ public class Node
         this.right = new ArrayList<>();
     }
 
-    public void addLeftChild(Node node)
+    public Node addLeftChild(Node node)
     {
         left.add(node);
+        return node;
     }
 
-    public void addRightChild(Node node)
+    public Node addRightChild(Node node)
     {
         right.add(node);
+        return node;
     }
 }

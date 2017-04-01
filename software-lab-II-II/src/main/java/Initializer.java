@@ -5,12 +5,12 @@ import util.FileHelper;
 
 public class Initializer
 {
+    private FileHelper fileHelper = new FileHelper();
+
     public static void main(String[] args)
     {
         new Initializer().run();
     }
-
-    private FileHelper fileHelper = new FileHelper();
 
     private void run()
     {

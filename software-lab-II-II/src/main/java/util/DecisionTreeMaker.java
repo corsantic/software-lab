@@ -38,37 +38,11 @@ public class DecisionTreeMaker
         new DecisionTreeMaker().test();
     }
 
-    private void test()
-    {
-        String maxGainAttribute = getMaxGain();
-
-        System.out.println(maxGainAttribute + "   >  ");
-    }
-
-    private String getMaxGain()
-    {
-        String max = "";
-        double maxGain = 0;
-        for (String attributeName : ATTRIBUTES)
-        {
-            double gain = gain(attributeName);
-            if (gain > maxGain)
-            {
-                maxGain = gain;
-                max = attributeName;
-            }
-        }
-
-        return max;
-    }
-
-
     private static void findThreSholdWithMaxGain(String attrName, int... values)
     {
 
 
     }
-
 
     private static double findGain(List<Patient> patients, String attrName, int value)
     {
@@ -88,7 +62,6 @@ public class DecisionTreeMaker
                 }).sum();
     }
 
-
     private static double gain(String attributeName)
     {
         List<Integer> is = uniqueValueList(attributeName);
@@ -107,7 +80,6 @@ public class DecisionTreeMaker
 
         return entropy(patientList) - sum;
     }
-
 
     /**
      * bu deger kac kez kullanilmis
@@ -139,5 +111,29 @@ public class DecisionTreeMaker
                 .filter(patient -> patient.getAttributes().containsKey(name))
                 .map(patient -> Integer.valueOf(patient.getAttributeValue(name)))
                 .distinct().collect(Collectors.toList());
+    }
+
+    private void test()
+    {
+        String maxGainAttribute = getMaxGain();
+
+        System.out.println(maxGainAttribute + "   >  ");
+    }
+
+    private String getMaxGain()
+    {
+        String max = "";
+        double maxGain = 0;
+        for (String attributeName : ATTRIBUTES)
+        {
+            double gain = gain(attributeName);
+            if (gain > maxGain)
+            {
+                maxGain = gain;
+                max = attributeName;
+            }
+        }
+
+        return max;
     }
 }

@@ -9,7 +9,9 @@ import java.util.concurrent.TimeUnit;
 
 public class MultiThreadSample
 {
-    /** ayni islemi bir 3 thread le birde 1 thread ile calistirir isek fark anlasilir */
+    /**
+     * ayni islemi bir 3 thread le birde 1 thread ile calistirir isek fark anlasilir
+     */
     private static final int THREAD_COUNT = 3;
 
     public static void main(String[] args) throws Exception
@@ -61,7 +63,8 @@ public class MultiThreadSample
                         throw new IllegalStateException(e);
                     }
                 })
-                .forEach(taskResult -> {
+                .forEach(taskResult ->
+                {
                     System.out.println(taskResult + " done.");
                 });
 
