@@ -2,6 +2,7 @@ package util;
 
 import static util.Commons.log2;
 import static util.Constants.ATTRIBUTES;
+import static util.Constants.SAMPLE_VALUES;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,42 +37,24 @@ public class DecisionTreeMaker
         System.out.println(root);
     }
 
-
-    private int[] getValue(String attr)
-    {
-        switch (attr)
-        {
-            case Constants.AGE_OF_AT_TIME_OF_OPERATION:
-                return new int[]{50, 60, 70};
-
-            case Constants.POSITIVE_AXILLARY_NODES_COUNT:
-                return new int[]{62, 63, 64};
-
-            case Constants.YEAR_OF_OPERATION:
-                return new int[]{5, 10, 19};
-            default:
-                return new int[]{};
-        }
-    }
-
     private void test(Node root, List<Patient> patients, String direction)
     {
-        String maxGain = getMaxGain(patients);
+        String attributeWithMaxGain = findAttributeWithMaxGain(patients);
 
-        int thresholdWithMaxGain = findThresholdWithMaxGain(patients, maxGain, getValue(maxGain));
+        int thresholdWithMaxGain = findThresholdWithMaxGain(patients, attributeWithMaxGain, SAMPLE_VALUES.get(attributeWithMaxGain));
 
-        if (maxGain.equals(Constants.SURVIVAL_STATUS))
+        if (attributeWithMaxGain.equals(Constants.SURVIVAL_STATUS))
         {
-            root.addLeftChild(new Node(countAttributeValue(patients, maxGain, 1), "1"));
-            root.addRightChild(new Node(countAttributeValue(patients, maxGain, 2), "2"));
+            root.addLeftChild(new Node(countAttributeValue(patients, attributeWithMaxGain, 1), "1"));
+            root.addRightChild(new Node(countAttributeValue(patients, attributeWithMaxGain, 2), "2"));
             return;
         }
 
-        if (thresholdWithMaxGain == -1 || maxGain.equals(""))
+        if (thresholdWithMaxGain == -1 || attributeWithMaxGain.equals(""))
             return;
 
 
-        Node node = new Node(thresholdWithMaxGain, maxGain);
+        Node node = new Node(thresholdWithMaxGain, attributeWithMaxGain);
 
         switch (direction)
         {
@@ -82,20 +65,19 @@ public class DecisionTreeMaker
                 root.addLeftChild(node);
                 break;
             case "root":
-                root = node;
+                root.setRoot(node);
                 break;
         }
 
-        root.addLeftChild(new Node(thresholdWithMaxGain, maxGain));
 
-        List<Patient> hig = getAttributeValueHigh(patients, maxGain, thresholdWithMaxGain);
+        List<Patient> hig = getAttributeValueHigh(patients, attributeWithMaxGain, thresholdWithMaxGain);
         if (hig.size() > 0)
         {
             test(node, hig, "l");
         }
 
 
-        List<Patient> lower = getAttributeValueBelow(patients, maxGain, thresholdWithMaxGain);
+        List<Patient> lower = getAttributeValueBelow(patients, attributeWithMaxGain, thresholdWithMaxGain);
         if (lower.size() > 0)
         {
             test(node, lower, "r");
@@ -128,21 +110,19 @@ public class DecisionTreeMaker
         double sum = 0;
 
         double allPossibilities = is.size();
-        long l = countAttributeValueBelow(patients, attrName, value);
 
         List<Patient> subset = patients.stream()
                 .filter(p -> Integer.valueOf(p.getAttributeValue(attrName)) < value)
                 .collect(Collectors.toList());
-        sum += l / allPossibilities * entropy(subset);
+        sum += subset.size() / allPossibilities * entropy(subset);
 
         // -----------
 
 
-        l = countAttributeValueHigh(patients, attrName, value);
         subset = patients.stream()
                 .filter(p -> Integer.valueOf(p.getAttributeValue(attrName)) >= value)
                 .collect(Collectors.toList());
-        sum += l / allPossibilities * entropy(subset);
+        sum += subset.size() / allPossibilities * entropy(subset);
 
 
         return entropy(patients) - sum;
@@ -154,9 +134,12 @@ public class DecisionTreeMaker
                 .mapToDouble((x) ->
                 {
                     long l = countAttributeValue(patients, Constants.SURVIVAL_STATUS, x);
-                    if(l == 0) return 0;
+                    if (l == 0) return 0;
+
                     double allPos = patients.size();
-                    return -l / allPos * log2(l / allPos);
+                    double pr = l / allPos;
+
+                    return -pr * log2(pr);
                 }).sum();
     }
 
@@ -166,17 +149,17 @@ public class DecisionTreeMaker
         if (valueList == null || valueList.size() <= 0)
             return -1;
 
-        double allPossibilities = valueList.size();
+        double allPossibilities = patientList.size();
         double sum = valueList.stream().mapToDouble(val ->
         {
             List<Patient> subset = getPatientsThatValue(patients, attributeName, val);
 
-            double result = subset.size() / allPossibilities * entropy(subset);
+            double result = subset.size() / allPossibilities * entropy(patients);
 
             return result;
         }).sum();
 
-        double gain =  entropy(patients) - sum;
+        double gain = entropy(patients) - sum;
 
         System.out.println(attributeName + " - gain: " + gain);
         System.out.println(attributeName + " - entropy:  " + entropy(patients));
@@ -240,7 +223,6 @@ public class DecisionTreeMaker
     }
 
 
-
     private static List<Integer> getValueList(List<Patient> patients, String name) // m
     {
         return patients.stream()
@@ -250,10 +232,10 @@ public class DecisionTreeMaker
     }
 
 
-    private String getMaxGain(List<Patient> patients)
+    private String findAttributeWithMaxGain(List<Patient> patients)
     {
         String max = "";
-        double maxGain = 0;
+        double maxGain = -5000d;
         for (String attributeName : ATTRIBUTES)
         {
             double gain = gain(patients, attributeName);

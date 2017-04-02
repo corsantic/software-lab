@@ -16,12 +16,18 @@ public class Node
     private List<Node> right;
 
 
+
     public Node(int threshold, String name)
     {
         this.threshold = threshold;
         this.name = name;
         this.left = new ArrayList<>();
         this.right = new ArrayList<>();
+    }
+
+    public void setRoot(Node root)
+    {
+        this.root = root;
     }
 
     public Node addLeftChild(Node node)
