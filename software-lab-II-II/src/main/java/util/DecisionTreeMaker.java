@@ -4,7 +4,6 @@ import static util.Commons.log2;
 import static util.Constants.ATTRIBUTES;
 import static util.Constants.SAMPLE_VALUES;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,14 +40,14 @@ public class DecisionTreeMaker
     {
         String attributeWithMaxGain = findAttributeWithMaxGain(patients);
 
-        int thresholdWithMaxGain = findThresholdWithMaxGain(patients, attributeWithMaxGain, SAMPLE_VALUES.get(attributeWithMaxGain));
-
-        if (attributeWithMaxGain.equals(Constants.SURVIVAL_STATUS))
+        if (Constants.SURVIVAL_STATUS.equals(attributeWithMaxGain))
         {
             root.addLeftChild(new Node(countAttributeValue(patients, attributeWithMaxGain, 1), "1"));
             root.addRightChild(new Node(countAttributeValue(patients, attributeWithMaxGain, 2), "2"));
             return;
         }
+
+        int thresholdWithMaxGain = findThresholdWithMaxGain(patients, attributeWithMaxGain, SAMPLE_VALUES.get(attributeWithMaxGain));
 
         if (thresholdWithMaxGain == -1 || attributeWithMaxGain.equals(""))
             return;
@@ -92,7 +91,6 @@ public class DecisionTreeMaker
         for (int value : values)
         {
             double gain = findGain(patients, attrName, value);
-            //            System.out.println(" founded gain : " + gain);
             if (gain > maxGain)
             {
                 maxValue = value;
@@ -105,62 +103,53 @@ public class DecisionTreeMaker
 
     private static double findGain(List<Patient> patients, String attrName, int value)
     {
-        List<Integer> is = getValueList(patients, attrName); //todo
-
+        List<Integer> values = getValues(patients, attrName); //todo
         double sum = 0;
+        double allPossibilities = values.size();
 
-        double allPossibilities = is.size();
-
-        List<Patient> subset = patients.stream()
-                .filter(p -> Integer.valueOf(p.getAttributeValue(attrName)) < value)
-                .collect(Collectors.toList());
+        List<Patient> subset = getAttributeValueBelow(patients, attrName, value);
         sum += subset.size() / allPossibilities * entropy(subset);
 
         // -----------
 
-
-        subset = patients.stream()
-                .filter(p -> Integer.valueOf(p.getAttributeValue(attrName)) >= value)
-                .collect(Collectors.toList());
+        subset = getAttributeValueHigh(patients, attrName, value);
         sum += subset.size() / allPossibilities * entropy(subset);
 
 
         return entropy(patients) - sum;
     }
 
+    // * Entropy : E(S)    =  sum:i:1->n  - Pr(Ci) * log2(Pr(Ci))
     private static double entropy(List<Patient> patients)
     {
-        return Arrays.stream(new int[]{1, 2})
-                .mapToDouble((x) ->
+        return getValues(patients, Constants.SURVIVAL_STATUS)
+                .stream().distinct().mapToDouble((value) ->
                 {
-                    long l = countAttributeValue(patients, Constants.SURVIVAL_STATUS, x);
-                    if (l == 0) return 0;
+                    long count = countAttributeValue(patients, Constants.SURVIVAL_STATUS, value);
+                    double pr = count / Double.valueOf(patients.size());
 
-                    double allPos = patients.size();
-                    double pr = l / allPos;
-
-                    return -pr * log2(pr);
+                    return count == 0 ? 0 : -pr * log2(pr);
                 }).sum();
     }
 
     private static double gain(List<Patient> patients, String attributeName)
     {
-        List<Integer> valueList = getValueList(patients, attributeName);
-        if (valueList == null || valueList.size() <= 0)
+        List<Integer> values = getValues(patients, attributeName);
+        if (values == null || values.size() <= 0)
             return -1;
 
-        double allPossibilities = patientList.size();
-        double sum = valueList.stream().mapToDouble(val ->
+        double sum = values.stream().mapToDouble(val ->
         {
             List<Patient> subset = getPatientsThatValue(patients, attributeName, val);
 
-            double result = subset.size() / allPossibilities * entropy(patients);
+            double result = subset.size() / Double.valueOf(patients.size()) * entropy(subset);
 
             return result;
         }).sum();
 
         double gain = entropy(patients) - sum;
 
+        System.out.println(attributeName + " - sum: " + sum);
         System.out.println(attributeName + " - gain: " + gain);
         System.out.println(attributeName + " - entropy:  " + entropy(patients));
         System.out.println();
@@ -177,24 +166,6 @@ public class DecisionTreeMaker
                 .filter(patient -> patient.getAttributes().containsKey(name))
                 .map(patient -> Integer.valueOf(patient.getAttributeValue(name)))
                 .filter(value -> value.equals(val))
-                .count();
-    }
-
-    private static long countAttributeValueBelow(List<Patient> patients, String name, int val)
-    {
-        return patients.stream()
-                .filter(patient -> patient.getAttributes().containsKey(name))
-                .map(patient -> Integer.valueOf(patient.getAttributeValue(name)))
-                .filter(value -> value < val)
-                .count();
-    }
-
-    private static long countAttributeValueHigh(List<Patient> patients, String name, int val)
-    {
-        return patients.stream()
-                .filter(patient -> patient.getAttributes().containsKey(name))
-                .map(patient -> Integer.valueOf(patient.getAttributeValue(name)))
-                .filter(value -> value >= val)
                 .count();
     }
 
@@ -223,7 +194,7 @@ public class DecisionTreeMaker
     }
 
 
-    private static List<Integer> getValueList(List<Patient> patients, String name) // m
+    private static List<Integer> getValues(List<Patient> patients, String name) // m
     {
         return patients.stream()
                 .filter(patient -> patient.getAttributes().containsKey(name))
