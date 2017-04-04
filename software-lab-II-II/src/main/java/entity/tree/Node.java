@@ -14,6 +14,7 @@ public class Node
     private Node root;
     private List<Node> left;
     private List<Node> right;
+    private String targetLabel;//anlık target almak içiin
 
     public Node(int threshold, String name)
     {
@@ -26,19 +27,32 @@ public class Node
     public void setRoot(Node root)
     {
         this.root = root;
+        setTargetLabel(root.toString());
     }
 
     public Node addLeftChild(Node node)
     {
         left.add(node);
+        setTargetLabel(node.toString());
         return node;
     }
 
     public Node addRightChild(Node node)
     {
         right.add(node);
+        setTargetLabel(node.toString());
         return node;
     }
+    public void setTargetLabel(String targetLabel)
+    {
+        this.targetLabel=targetLabel;
+    }
+     public String getTargetLabel()
+    {
+     return targetLabel;
+    }
+
+
 
     @Override
     public String toString()
