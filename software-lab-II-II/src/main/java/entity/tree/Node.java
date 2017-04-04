@@ -15,8 +15,6 @@ public class Node
     private List<Node> left;
     private List<Node> right;
 
-
-
     public Node(int threshold, String name)
     {
         this.threshold = threshold;
