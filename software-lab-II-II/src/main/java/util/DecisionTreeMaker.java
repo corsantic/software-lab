@@ -67,7 +67,7 @@ public class DecisionTreeMaker
                 continue;
 
             double entropy = entropy(patients, attributeName);
-            System.out.format("entropy: %s, attr: %s \n", entropy, attributeName);
+//            System.out.format("entropy: %s, attr: %s \n", entropy, attributeName);
             if (entropy > maxEntropy)
             {
                 maxEntropy = entropy;
@@ -114,7 +114,7 @@ public class DecisionTreeMaker
         v = subset.size() / Double.valueOf(patients.size());
         sum += -v * log2(v); // ?
 
-        System.out.format("attr: %s, thresold: %s, entropy: %s \n", attrName, thresold, sum);
+//        System.out.format("attr: %s, thresold: %s, entropy: %s \n", attrName, thresold, sum);
         return sum;
     }
 
