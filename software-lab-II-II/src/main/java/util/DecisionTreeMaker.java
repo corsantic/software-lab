@@ -39,7 +39,7 @@ public class DecisionTreeMaker
         buildTree();
         BinaryTreeUtils.printNode(tree);
 
-//        new treeGUI(tree);
+        new treeGUI(tree);
     }
 
     public static Node buildTree()
@@ -195,6 +195,11 @@ public class DecisionTreeMaker
 
     private boolean isOk(List<Patient> patients, List<String> excludes)
     {
+        int size = getPatientsThatValue(patients, SURVIVAL_STATUS, 1).size();
+        if(size == 0 || size == patients.size())
+            return false;
+
+
         String subattrWithMaxEntropy = findAttributeWithMaxInformationGain(patients, excludes.toArray(new String[0]));
         if (subattrWithMaxEntropy.equals(""))
             return false;
@@ -208,13 +213,8 @@ public class DecisionTreeMaker
     private void add(Node root, List<Patient> patients)
     {
         String name = "1(" + getPatientsThatValue(patients, SURVIVAL_STATUS, 1).size() + ")";
+        name += " 2(" + getPatientsThatValue(patients, SURVIVAL_STATUS, 2).size() + ")";
         root.left = new Node(name);
-
-
-        name = "2(" + getPatientsThatValue(patients, SURVIVAL_STATUS, 2).size() + ")";
-        root.right = new Node(name);
-
-        System.out.println(" + " + patients.size() + " = " + root.left.data + "  + " + root.right.data);
     }
 
     private Node addNode(Node root, String direction, String attrWithMaxEntropy, int thresholdWithMaxGain)
