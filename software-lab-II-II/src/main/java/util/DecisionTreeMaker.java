@@ -9,6 +9,9 @@ import static util.Constants.SURVIVAL_STATUS;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import entity.Patient;
@@ -69,7 +72,6 @@ public class DecisionTreeMaker
                     List<Patient> subValues = getPatientsThatValue(patients, attrName, value);
 
                     double pr = subValues.size() / Double.valueOf(patients.size());
-
                     return pr * entropy(subValues, SURVIVAL_STATUS);
                 }).sum();
 
@@ -114,15 +116,54 @@ public class DecisionTreeMaker
     {
         int maxValue = -1;
         double maxGain = -1;
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+
+        List<Callable<Result>> tasks = new ArrayList<>();
+
         for (int value : values)
         {
-            double gain = entropy(patients, attrName, value);
-            if (gain > maxGain)
+            Callable<Result> t = new Callable<Result>()
             {
-                maxValue = value;
-                maxGain = gain;
-            }
+                @Override
+                public Result call() throws Exception
+                {
+                    double gain = entropy(patients, attrName, value);
+                    Result r = new Result();
+                    r.gain = gain;
+                    r.thresold = value;
+                    return r;
+                }
+            };
+            tasks.add(t);
         }
+
+
+        try
+        {
+            Result reduce = executor.invokeAll(tasks) /** invokeAll: tum tasklarin tamamlanmasini bekliyor */
+                    .stream()
+                    .map(future ->
+                    {
+                        try
+                        {
+                            return future.get();
+                        }
+                        catch (Exception e)
+                        {
+                            throw new IllegalStateException(e);
+                        }
+                    })
+                    .reduce((a, b) -> a.gain > b.gain ? a : b).get();
+            return reduce.thresold;
+        }
+        catch (InterruptedException e)
+        {
+
+
+        }
+
+        executor.shutdown();
+
 
         return maxValue;
     }
@@ -186,7 +227,9 @@ public class DecisionTreeMaker
         {
             run(node, leftSubSet, "left", subExclude);
             run(node, rightSubSet, "right", subExclude);
-        } else {
+        }
+        else
+        {
             add(node, patients);
         }
 
@@ -196,7 +239,7 @@ public class DecisionTreeMaker
     private boolean isOk(List<Patient> patients, List<String> excludes)
     {
         int size = getPatientsThatValue(patients, SURVIVAL_STATUS, 1).size();
-        if(size == 0 || size == patients.size())
+        if (size == 0 || size == patients.size())
             return false;
 
 
@@ -260,6 +303,13 @@ public class DecisionTreeMaker
         }
         //        System.out.println("-------------------");
         return max;
+    }
+
+
+    static class Result
+    {
+        public double gain;
+        public int thresold;
     }
 
 
