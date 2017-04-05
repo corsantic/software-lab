@@ -39,8 +39,12 @@ public class DecisionTreeMaker
         System.out.println("finished");
 
         BinaryTreeUtils.printNode(tree);
+    }
 
-
+    public static Node buildTree()
+    {
+        new DecisionTreeMaker().run(tree, patientList, "root", Arrays.asList(SURVIVAL_STATUS));
+        return tree;
     }
 
     // * Entropy : E(S)    =  sum:i:1->n  - Pr(Ci) * log2(Pr(Ci))
