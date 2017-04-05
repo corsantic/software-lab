@@ -13,14 +13,14 @@ public interface Constants
     String SURVIVAL_STATUS = "survivalStatus";
 
     List<String> ATTRIBUTES = Arrays.asList(AGE_OF_AT_TIME_OF_OPERATION,
-            POSITIVE_AXILLARY_NODES_COUNT,
             YEAR_OF_OPERATION,
+            POSITIVE_AXILLARY_NODES_COUNT,
             SURVIVAL_STATUS);
 
     Map<String, int[]> SAMPLE_VALUES = new HashMap<String, int[]>()
     {{
         put(Constants.AGE_OF_AT_TIME_OF_OPERATION, new int[]{50, 60, 70});
-        put(Constants.POSITIVE_AXILLARY_NODES_COUNT, new int[]{62, 63, 64});
-        put(Constants.YEAR_OF_OPERATION, new int[]{5, 10, 19});
+        put(Constants.YEAR_OF_OPERATION, new int[]{62, 63, 64});
+        put(Constants.POSITIVE_AXILLARY_NODES_COUNT, new int[]{4, 5, 10, 19});
     }};
 }
