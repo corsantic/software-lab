@@ -38,6 +38,8 @@ public class DecisionTreeMaker
     {
         buildTree();
         BinaryTreeUtils.printNode(tree);
+
+        new treeGUI(tree);
     }
 
     public static Node buildTree()
