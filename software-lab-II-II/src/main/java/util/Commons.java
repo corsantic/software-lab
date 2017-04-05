@@ -12,5 +12,17 @@ public class Commons
     {
         return logb(a, 2);
     }
+
+    public static boolean isIn(String val, String... arr)
+    {
+        for (String s : arr)
+        {
+            if (s.equals(val))
+                return true;
+        }
+
+        return false;
+    }
 }
+
 

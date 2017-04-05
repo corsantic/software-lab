@@ -1,5 +1,6 @@
 package util;
 
+import static util.Commons.isIn;
 import static util.Commons.log2;
 import static util.Constants.ATTRIBUTES;
 import static util.Constants.SAMPLE_VALUES;
@@ -35,9 +36,7 @@ public class DecisionTreeMaker
 
     public static void main(String[] args)
     {
-        new DecisionTreeMaker().run(tree, patientList, "root", Arrays.asList(SURVIVAL_STATUS));
-        System.out.println("finished");
-
+        buildTree();
         BinaryTreeUtils.printNode(tree);
     }
 
@@ -53,7 +52,7 @@ public class DecisionTreeMaker
         return getAllValues(patients, attrName)
                 .stream().distinct().mapToDouble((value) -> // distinct
                 {
-                    double count = getPatients(patients, attrName, value).size();
+                    double count = getPatientsThatValue(patients, attrName, value).size();
                     double pr = count / patients.size();
 
                     return count == 0 ? 0 : -pr * log2(pr);
@@ -65,7 +64,7 @@ public class DecisionTreeMaker
         double sum = getAllValues(patients, attrName)
                 .stream().distinct().mapToDouble((value) -> // distinct
                 {
-                    List<Patient> subValues = getPatientss(patients, attrName, value);
+                    List<Patient> subValues = getPatientsThatValue(patients, attrName, value);
 
                     double pr = subValues.size() / Double.valueOf(patients.size());
 
@@ -84,11 +83,11 @@ public class DecisionTreeMaker
         double sum = 0;
         List<Patient> subset = getAttributeValueBelow(patients, attrName, thresold);
         double v = subset.size() / Double.valueOf(patients.size());
-        sum += -v * log2(v); // ?
+        sum += -v * entropy(subset, SURVIVAL_STATUS); // ?
 
         subset = getAttributeValueHigh(patients, attrName, thresold);
         v = subset.size() / Double.valueOf(patients.size());
-        sum += -v * log2(v); // ?
+        sum += -v * entropy(subset, SURVIVAL_STATUS); // ?
 
         //        System.out.format("attr: %s, thresold: %s, entropy: %s \n", attrName, thresold, sum);
         return sum;
@@ -102,19 +101,10 @@ public class DecisionTreeMaker
                 .collect(Collectors.toList());
     }
 
-    private static List<Integer> getPatients(List<Patient> patients, String name, int expectedValue)
+    private static List<Patient> getPatientsThatValue(List<Patient> patients, String name, int value) // m
     {
         return patients.stream()
-                .filter(patient -> patient.getAttributes().containsKey(name))
-                .map(patient -> Integer.valueOf(patient.getAttributeValue(name)))
-                .filter(value -> value.equals(expectedValue)).collect(Collectors.toList());
-    }
-
-    private static List<Patient> getPatientss(List<Patient> patients, String name, int expectedValue)
-    {
-        return patients.stream()
-                .filter(patient -> patient.getAttributes().containsKey(name)
-                        && Integer.valueOf(patient.getAttributeValue(name)).equals(expectedValue))
+                .filter(patient -> patient.getAttributeValue(name).equals(String.valueOf(value)))
                 .collect(Collectors.toList());
     }
 
@@ -156,13 +146,6 @@ public class DecisionTreeMaker
                 .collect(Collectors.toList());
     }
 
-    private static List<Patient> getPatientsThatValue(List<Patient> patients, String name, int value) // m
-    {
-        return patients.stream()
-                .filter(patient -> patient.getAttributeValue(name).equals(String.valueOf(value)))
-                .collect(Collectors.toList());
-    }
-
 
     // -------------------------------------------------------------------- //
     // -------------------------------------------------------------------- //
@@ -171,8 +154,8 @@ public class DecisionTreeMaker
 
     private void run(Node root, List<Patient> patients, String direction, List<String> exclude)
     {
-        String attrWithMaxEntropy = findAttributeWithMaxEntropy(patients, exclude.toArray(new String[0]));
-        if ( attrWithMaxEntropy.equals(""))
+        String attrWithMaxEntropy = findAttributeWithMaxInformationGain(patients, exclude.toArray(new String[0]));
+        if (attrWithMaxEntropy.equals(""))
         {
             System.out.println(patients.size());
             add(root, patients);
@@ -181,26 +164,44 @@ public class DecisionTreeMaker
 
         int thresholdWithMaxGain = findThresholdWithMaxGain(patients, attrWithMaxEntropy, SAMPLE_VALUES.get(attrWithMaxEntropy));
 
-        if (thresholdWithMaxGain == -1 )
+        if (thresholdWithMaxGain == -1)
         {
             System.out.println(patients.size());
             add(root, patients);
             return;
         }
 
+
         Node node = addNode(root, direction, attrWithMaxEntropy, thresholdWithMaxGain);
 
         List<String> subExclude = new ArrayList<>(exclude);
         subExclude.add(attrWithMaxEntropy);
 
-        List<Patient> rightSubSet = getAttributeValueHigh(patients, attrWithMaxEntropy, thresholdWithMaxGain);
-        run(node, rightSubSet, "right", subExclude);
 
+        List<Patient> rightSubSet = getAttributeValueHigh(patients, attrWithMaxEntropy, thresholdWithMaxGain);
         List<Patient> leftSubSet = getAttributeValueBelow(patients, attrWithMaxEntropy, thresholdWithMaxGain);
-        run(node, leftSubSet, "left", subExclude);
+        if (isOk(rightSubSet, subExclude) && isOk(leftSubSet, subExclude))
+        {
+            run(node, leftSubSet, "left", subExclude);
+            run(node, rightSubSet, "right", subExclude);
+        } else {
+            add(node, patients);
+        }
 
 
     }
+
+    private boolean isOk(List<Patient> patients, List<String> excludes)
+    {
+        String subattrWithMaxEntropy = findAttributeWithMaxInformationGain(patients, excludes.toArray(new String[0]));
+        if (subattrWithMaxEntropy.equals(""))
+            return false;
+        int subthresholdWithMaxGain = findThresholdWithMaxGain(patients, subattrWithMaxEntropy, SAMPLE_VALUES.get(subattrWithMaxEntropy));
+        if (subthresholdWithMaxGain == -1)
+            return false;
+        return true;
+    }
+
 
     private void add(Node root, List<Patient> patients)
     {
@@ -211,7 +212,7 @@ public class DecisionTreeMaker
         name = "2(" + getPatientsThatValue(patients, SURVIVAL_STATUS, 2).size() + ")";
         root.right = new Node(name);
 
-        System.out.println(" + " + patients.size() + " = " + root.left.data +  "  + " + root.right.data);
+        System.out.println(" + " + patients.size() + " = " + root.left.data + "  + " + root.right.data);
     }
 
     private Node addNode(Node root, String direction, String attrWithMaxEntropy, int thresholdWithMaxGain)
@@ -237,7 +238,7 @@ public class DecisionTreeMaker
         return newNode;
     }
 
-    private String findAttributeWithMaxEntropy(List<Patient> patients, String... exclude)
+    private static String findAttributeWithMaxInformationGain(List<Patient> patients, String... exclude)
     {
         //        System.out.println("-------------------");
         String max = "";
@@ -257,17 +258,6 @@ public class DecisionTreeMaker
         }
         //        System.out.println("-------------------");
         return max;
-    }
-
-    private boolean isIn(String val, String... arr)
-    {
-        for (String s : arr)
-        {
-            if (s.equals(val))
-                return true;
-        }
-
-        return false;
     }
 
 
