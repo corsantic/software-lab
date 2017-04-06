@@ -1,6 +1,6 @@
 package util;
 
-import static util.Constants.ATTRIBUTES;
+import static util.Commons.Constants.ATTRIBUTES;
 
 import java.io.File;
 import java.io.FileNotFoundException;

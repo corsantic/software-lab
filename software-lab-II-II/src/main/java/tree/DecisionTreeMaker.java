@@ -1,10 +1,10 @@
 package tree;
 
+import static util.Commons.Constants.ATTRIBUTES;
+import static util.Commons.Constants.SAMPLE_VALUES;
+import static util.Commons.Constants.SURVIVAL_STATUS;
 import static util.Commons.isIn;
 import static util.Commons.log2;
-import static util.Constants.ATTRIBUTES;
-import static util.Constants.SAMPLE_VALUES;
-import static util.Constants.SURVIVAL_STATUS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
