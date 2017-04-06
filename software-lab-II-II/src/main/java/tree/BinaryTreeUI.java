@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import entity.Node;
-import util.Constants;
+import util.Commons.Constants;
 
 /**
  * @source https://github.com/EslaMx7/AI-Tasks-JADE-Tests/blob/master/src/trees/tasks/treeGUI.java

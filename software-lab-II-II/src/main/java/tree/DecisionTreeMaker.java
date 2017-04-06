@@ -1,5 +1,6 @@
 package tree;
 
+
 import static util.Commons.Constants.ATTRIBUTES;
 import static util.Commons.Constants.SAMPLE_VALUES;
 import static util.Commons.Constants.SURVIVAL_STATUS;
@@ -33,11 +34,18 @@ import entity.Patient;
  */
 public class DecisionTreeMaker
 {
-    // * Entropy : E(S)    =  sum:i:1->n  - Pr(Ci) * log2(Pr(Ci))
-    private static double entropy(List<Patient> patients, String attrName)
+    public Node buildTree(List<Patient> patients)
     {
-        return getAllValues(patients, attrName)
-                .stream().distinct().mapToDouble((value) -> // distinct
+        Node node = new Node("-");
+        buildTree(node, patients, "root", Arrays.asList(SURVIVAL_STATUS));
+        return node;
+    }
+
+    private double entropy(List<Patient> patients, String attrName)
+    {
+        return patients.stream()
+                .map(patient -> Integer.valueOf(patient.getAttributeValue(attrName)))
+                .distinct().mapToDouble((value) ->
                 {
                     double count = getPatientsThatValue(patients, attrName, value).size();
                     double pr = count / patients.size();
@@ -46,10 +54,11 @@ public class DecisionTreeMaker
                 }).sum();
     }
 
-    private static double informationGain(List<Patient> patients, String attrName)
+    private double informationGain(List<Patient> patients, String attrName)
     {
-        double sum = getAllValues(patients, attrName)
-                .stream().distinct().mapToDouble((value) -> // distinct
+        double sum = patients.stream()
+                .map(patient -> Integer.valueOf(patient.getAttributeValue(attrName)))
+                .distinct().mapToDouble((value) ->
                 {
                     List<Patient> subValues = getPatientsThatValue(patients, attrName, value);
 
@@ -58,46 +67,26 @@ public class DecisionTreeMaker
                 }).sum();
 
 
-        double gain = entropy(patients, SURVIVAL_STATUS) - sum;
-        //        System.out.format("%s attr gain: %s \n", attrName, gain);
-        return gain;
+        return entropy(patients, SURVIVAL_STATUS) - sum;
     }
 
-
-    private static double entropy(List<Patient> patients, String attrName, int thresold)
+    private double informationGain(List<Patient> patients, String attrName, int threshold)
     {
-        double sum = 0;
-        List<Patient> subset = getAttributeValueBelow(patients, attrName, thresold);
-        double v = subset.size() / Double.valueOf(patients.size());
-        sum += -v * entropy(subset, SURVIVAL_STATUS); // ?
+        List<Patient> subset = getAttributeValueBelow(patients, attrName, threshold);
 
-        subset = getAttributeValueHigh(patients, attrName, thresold);
-        v = subset.size() / Double.valueOf(patients.size());
-        sum += -v * entropy(subset, SURVIVAL_STATUS); // ?
+        double pr = subset.size() / Double.valueOf(patients.size());
+        double sum = -pr * entropy(subset, SURVIVAL_STATUS);
 
-        //        System.out.format("attr: %s, thresold: %s, entropy: %s \n", attrName, thresold, sum);
+        subset = getAttributeValueHigh(patients, attrName, threshold);
+        pr = subset.size() / Double.valueOf(patients.size());
+        sum += -pr * entropy(subset, SURVIVAL_STATUS);
         return sum;
     }
 
-    private static List<Integer> getAllValues(List<Patient> patients, String name) // m
-    {
-        return patients.stream()
-                .filter(patient -> patient.getAttributes().containsKey(name))
-                .map(patient -> Integer.valueOf(patient.getAttributeValue(name)))
-                .collect(Collectors.toList());
-    }
 
-    private static List<Patient> getPatientsThatValue(List<Patient> patients, String name, int value) // m
-    {
-        return patients.stream()
-                .filter(patient -> patient.getAttributeValue(name).equals(String.valueOf(value)))
-                .collect(Collectors.toList());
-    }
-
-    private static int findThresholdWithMaxGain(List<Patient> patients, String attrName, int... values)
+    private int findThresholdWithMaxGain(List<Patient> patients, String attrName, int... values)
     {
         int maxValue = -1;
-        double maxGain = -1;
         ExecutorService executor = Executors.newFixedThreadPool(3);
 
         List<Callable<Result>> tasks = new ArrayList<>();
@@ -109,16 +98,15 @@ public class DecisionTreeMaker
                 @Override
                 public Result call() throws Exception
                 {
-                    double gain = entropy(patients, attrName, value);
+                    double gain = informationGain(patients, attrName, value);
                     Result r = new Result();
                     r.gain = gain;
-                    r.thresold = value;
+                    r.threshold = value;
                     return r;
                 }
             };
             tasks.add(t);
         }
-
 
         try
         {
@@ -136,7 +124,7 @@ public class DecisionTreeMaker
                         }
                     })
                     .reduce((a, b) -> a.gain > b.gain ? a : b).get();
-            return reduce.thresold;
+            return reduce.threshold;
         }
         catch (InterruptedException e)
         {
@@ -150,34 +138,7 @@ public class DecisionTreeMaker
         return maxValue;
     }
 
-    /**
-     * bu deger kac kez kullanilmis
-     */
-
-
-    private static List<Patient> getAttributeValueBelow(List<Patient> patients, String name, int val)
-    {
-        return patients.stream()
-                .filter(patient -> patient.getAttributes().containsKey(name) &&
-                        Integer.valueOf(patient.getAttributeValue(name)) < val)
-                .collect(Collectors.toList());
-    }
-
-    private static List<Patient> getAttributeValueHigh(List<Patient> patients, String name, int val)
-    {
-        return patients.stream()
-                .filter(patient -> patient.getAttributes().containsKey(name) &&
-                        Integer.valueOf(patient.getAttributeValue(name)) >= val)
-                .collect(Collectors.toList());
-    }
-
-
-    // -------------------------------------------------------------------- //
-    // -------------------------------------------------------------------- //
-    // -------------------------------------------------------------------- //
-    // -------------------------------------------------------------------- //
-
-    private static String findAttributeWithMaxInformationGain(List<Patient> patients, String... exclude)
+    private String findAttributeWithMaxInformationGain(List<Patient> patients, String... exclude)
     {
         //        System.out.println("-------------------");
         String max = "";
@@ -199,14 +160,7 @@ public class DecisionTreeMaker
         return max;
     }
 
-    public Node buildTree(List<Patient> patients)
-    {
-        Node node = new Node("-");
-        run(node, patients, "root", Arrays.asList(SURVIVAL_STATUS));
-        return node;
-    }
-
-    private void run(Node root, List<Patient> patients, String direction, List<String> exclude)
+    private void buildTree(Node root, List<Patient> patients, String direction, List<String> exclude)
     {
         String attrWithMaxEntropy = findAttributeWithMaxInformationGain(patients, exclude.toArray(new String[0]));
         if (attrWithMaxEntropy.equals(""))
@@ -236,8 +190,8 @@ public class DecisionTreeMaker
         List<Patient> leftSubSet = getAttributeValueBelow(patients, attrWithMaxEntropy, thresholdWithMaxGain);
         if (isOk(rightSubSet, subExclude) && isOk(leftSubSet, subExclude))
         {
-            run(node, leftSubSet, "left", subExclude);
-            run(node, rightSubSet, "right", subExclude);
+            buildTree(node, leftSubSet, "left", subExclude);
+            buildTree(node, rightSubSet, "right", subExclude);
         }
         else
         {
@@ -293,11 +247,31 @@ public class DecisionTreeMaker
         return newNode;
     }
 
-    static class Result
+    class Result
     {
         public double gain;
-        public int thresold;
+        public int threshold;
     }
 
 
+    private static List<Patient> getPatientsThatValue(List<Patient> patients, String attributeName, int value)
+    {
+        return patients.stream()
+                .filter(patient -> patient.getAttributeValue(attributeName).equals(String.valueOf(value)))
+                .collect(Collectors.toList());
+    }
+
+    private static List<Patient> getAttributeValueBelow(List<Patient> patients, String name, int threshold)
+    {
+        return patients.stream()
+                .filter(patient -> Integer.valueOf(patient.getAttributeValue(name)) < threshold)
+                .collect(Collectors.toList());
+    }
+
+    private static List<Patient> getAttributeValueHigh(List<Patient> patients, String name, int threshold)
+    {
+        return patients.stream()
+                .filter(patient -> Integer.valueOf(patient.getAttributeValue(name)) >= threshold)
+                .collect(Collectors.toList());
+    }
 }
