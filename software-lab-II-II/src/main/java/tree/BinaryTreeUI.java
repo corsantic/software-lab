@@ -1,35 +1,34 @@
-package util;
+package tree;
 
 import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import entity.tree.Node;
+import entity.Node;
 // @source https://github.com/EslaMx7/AI-Tasks-JADE-Tests/blob/master/src/trees/tasks/treeGUI.java
 
-public class treeGUI extends JFrame
+public class BinaryTreeUI extends JFrame
 {
 
-    private JPanel contentPane;
-    public Node tree;
-    public DrawTree drawer;
+    private JPanel contentPanel;
+    private Node tree;
+    private DrawTree drawer;
 
     /**
      * Create the frame.
      */
-    public treeGUI(Node tree)
+    public BinaryTreeUI(Node tree)
     {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 500, 500);
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        contentPane.setLayout(new BorderLayout(0, 0));
+        contentPanel = new JPanel();
+        contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        contentPanel.setLayout(new BorderLayout(0, 0));
         drawer = new DrawTree(tree);
 
-        contentPane.add(drawer);
-        setContentPane(contentPane);
-        this.tree = tree;
+        contentPanel.add(drawer);
+        setContentPane(contentPanel);
         setVisible(true);
     }
 

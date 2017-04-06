@@ -1,10 +1,10 @@
-package util;
+package tree;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import entity.tree.Node;
+import entity.Node;
 
 /**
  * @souece: http://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram

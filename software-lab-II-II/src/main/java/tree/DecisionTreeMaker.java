@@ -1,4 +1,4 @@
-package util;
+package tree;
 
 import static util.Commons.isIn;
 import static util.Commons.log2;
@@ -14,8 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import entity.Node;
 import entity.Patient;
-import entity.tree.Node;
 
 /**
  * c4.5 and decision tree stuffs is here
@@ -33,24 +33,6 @@ import entity.tree.Node;
  */
 public class DecisionTreeMaker
 {
-    private static FileHelper fileHelper = new FileHelper();
-    private static List<Patient> patientList = fileHelper.readAllPatients();
-    private static Node tree = new Node("-");
-
-    public static void main(String[] args)
-    {
-        buildTree();
-        BinaryTreeUtils.printNode(tree);
-
-        new treeGUI(tree);
-    }
-
-    public static Node buildTree()
-    {
-        new DecisionTreeMaker().run(tree, patientList, "root", Arrays.asList(SURVIVAL_STATUS));
-        return tree;
-    }
-
     // * Entropy : E(S)    =  sum:i:1->n  - Pr(Ci) * log2(Pr(Ci))
     private static double entropy(List<Patient> patients, String attrName)
     {
@@ -194,6 +176,13 @@ public class DecisionTreeMaker
     // -------------------------------------------------------------------- //
     // -------------------------------------------------------------------- //
     // -------------------------------------------------------------------- //
+
+    public Node buildTree(List<Patient> patients)
+    {
+        Node node = new Node("-");
+        run(node, patients, "root", Arrays.asList(SURVIVAL_STATUS));
+        return node;
+    }
 
     private void run(Node root, List<Patient> patients, String direction, List<String> exclude)
     {
