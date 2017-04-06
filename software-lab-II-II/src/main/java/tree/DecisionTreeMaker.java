@@ -177,6 +177,28 @@ public class DecisionTreeMaker
     // -------------------------------------------------------------------- //
     // -------------------------------------------------------------------- //
 
+    private static String findAttributeWithMaxInformationGain(List<Patient> patients, String... exclude)
+    {
+        //        System.out.println("-------------------");
+        String max = "";
+        double maxInfo = -5000d;
+        for (String attributeName : ATTRIBUTES)
+        {
+            if (isIn(attributeName, exclude))
+                continue;
+
+            double informationGain = informationGain(patients, attributeName);
+            //            System.out.format("entropy: %s, attr: %s \n", informationGain, attributeName);
+            if (informationGain > maxInfo)
+            {
+                maxInfo = informationGain;
+                max = attributeName;
+            }
+        }
+        //        System.out.println("-------------------");
+        return max;
+    }
+
     public Node buildTree(List<Patient> patients)
     {
         Node node = new Node("-");
@@ -241,7 +263,6 @@ public class DecisionTreeMaker
         return true;
     }
 
-
     private void add(Node root, List<Patient> patients)
     {
         String name = "1(" + getPatientsThatValue(patients, SURVIVAL_STATUS, 1).size() + ")";
@@ -271,29 +292,6 @@ public class DecisionTreeMaker
         //        System.out.println(direction + " : " + attrWithMaxEntropy + ": " + thresholdWithMaxGain);
         return newNode;
     }
-
-    private static String findAttributeWithMaxInformationGain(List<Patient> patients, String... exclude)
-    {
-        //        System.out.println("-------------------");
-        String max = "";
-        double maxInfo = -5000d;
-        for (String attributeName : ATTRIBUTES)
-        {
-            if (isIn(attributeName, exclude))
-                continue;
-
-            double informationGain = informationGain(patients, attributeName);
-            //            System.out.format("entropy: %s, attr: %s \n", informationGain, attributeName);
-            if (informationGain > maxInfo)
-            {
-                maxInfo = informationGain;
-                max = attributeName;
-            }
-        }
-        //        System.out.println("-------------------");
-        return max;
-    }
-
 
     static class Result
     {

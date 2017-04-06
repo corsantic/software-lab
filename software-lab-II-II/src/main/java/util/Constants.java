@@ -1,5 +1,6 @@
 package util;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,9 @@ import java.util.Map;
 
 public interface Constants
 {
+
+    Font UI_FONT = new Font("Tahoma", Font.BOLD, 20);
+
     String AGE_OF_AT_TIME_OF_OPERATION = "ageOfPatient"; // Age of patient at time of operation (numerical)
     String POSITIVE_AXILLARY_NODES_COUNT = "posAxNodesCount";
     String YEAR_OF_OPERATION = "yearOfOperation";
