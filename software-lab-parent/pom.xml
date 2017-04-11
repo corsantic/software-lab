@@ -8,10 +8,23 @@
     <artifactId>software-lab-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-	<modules>
+    <modules>
         <module>../software-lab-II-I/</module>
         <module>../software-lab-II-II/</module>
+        <module>../software-lab-II-III/</module>
     </modules>
+
+    <properties>
+        <apache.commons.lang.version>3.0</apache.commons.lang.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${apache.commons.lang.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -23,14 +36,14 @@
                     <source>1.8</source>
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
-					<debug>true</debug>
-					<fork>true</fork>
-					<meminitial>1024m</meminitial>
-					<maxmem>1024m</maxmem>
+                    <debug>true</debug>
+                    <fork>true</fork>
+                    <meminitial>1024m</meminitial>
+                    <maxmem>1024m</maxmem>
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
-				</configuration>
+                </configuration>
             </plugin>
         </plugins>
     </build>

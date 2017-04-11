@@ -5,9 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.kou</groupId>
-    <artifactId>multi-thread-decision-tree</artifactId>
+    <artifactId>website-with-vulnerability</artifactId>
     <version>1.0-SNAPSHOT</version>
-
 
     <parent>
         <groupId>com.kou</groupId>
@@ -15,4 +14,5 @@
         <version>1.0-SNAPSHOT</version>
         <relativePath>../software-lab-parent</relativePath>
     </parent>
+
 </project>
