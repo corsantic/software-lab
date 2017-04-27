@@ -8,5 +8,10 @@
     <definition name="home" extends="layout.basic">
         <put-attribute name="body" value="/WEB-INF/views/index.jsp"/>
     </definition>
-
+    <definition name="test" extends="layout.basic">
+    <put-attribute name="body" value="/WEB-INF/views/test.jsp"/>
+</definition>
+    <definition name="Registration" extends="layout.basic">
+        <put-attribute name="body" value="/WEB-INF/views/Registration.jsp"/>
+    </definition>
 </tiles-definitions>

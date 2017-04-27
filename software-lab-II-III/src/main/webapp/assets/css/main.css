@@ -51,15 +51,19 @@ body > div > div {
     width: 1000px;
     margin: auto;
     padding: 20px;
+    overflow: auto;
+    display: block;
+    height: 200px;
+    margin-top: 200px;
 }
 
 .left-menu {
-    width: 300px;
+    width: 25%;
     margin-right: 30px;
 }
 
 .content {
-    width: 100%;
+    width: 70%;
 }
 
 .left-menu > ul > li {
