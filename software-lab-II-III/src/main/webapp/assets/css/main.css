@@ -1,0 +1,13 @@
+header {
+    color: cadetblue;
+}
+
+footer {
+    position: absolute;
+    width: 100%;
+    height: 70px;
+    line-height: 70px;
+    background: #dedede;
+    text-align: center;
+    bottom: 0;
+}
