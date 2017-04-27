@@ -17,13 +17,24 @@
 </head>
 <body>
 <header>
-    Kocaeli university
+    <img src="/assets/images/kou-logo.png">
 </header>
 
-<tiles:insertAttribute name="body"/>
+<div class="container">
+    <div class="left-menu">
+        <ul>
+            <li class="active"><a href="#">Anasayfa</a></li>
+            <li><a href="#">Kurulum Dökümantasyon</a></li>
+            <li><a href="#">SQL Enjeksiyonu</a></li>
+            <li><a href="#">XSS</a></li>
+            <li><a href="#">Komut Enjeksiyonu</a></li>
+        </ul>
+    </div>
+    <div class="content"><tiles:insertAttribute name="body"/></div>
+</div>
 
 <footer>
-    Footer
+    Zayif web uygulamasi
 </footer>
 <c:forEach var="js" items="${scripts}">
     <script src="${js}?v=${version}" type="text/javascript"></script>
