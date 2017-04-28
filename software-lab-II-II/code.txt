@@ -1,0 +1,526 @@
+import java.util.List;
+
+import entity.Node;
+import entity.Patient;
+import tree.BinaryTreeUI;
+import tree.DecisionTreeMaker;
+import util.FileHelper;
+
+public class Initializer
+{
+    private FileHelper fileHelper = new FileHelper();
+    private DecisionTreeMaker decisionTreeMaker = new DecisionTreeMaker();
+
+    public static void main(String[] args)
+    {
+        new Initializer().run();
+    }
+
+    private void run()
+    {
+        List<Patient> patients = fileHelper.readAllPatients();
+        Node decisionTree = decisionTreeMaker.buildTree(patients);
+
+        new BinaryTreeUI(decisionTree);
+    }
+}
+
+package entity;
+
+public class Node
+{
+    public String data;
+    public Node left, right;
+
+    public Node(String data)
+    {
+        this.data = data;
+    }
+}
+package entity;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+public class Patient
+{
+    Map<String, String> attributes = new HashMap<>();
+
+    public String getAttributeValue(String attrName)
+    {
+        return attributes.get(attrName);
+    }
+
+    public Map<String, String> getAttributes()
+    {
+        return attributes;
+    }
+
+    @Override
+    public String toString()
+    {
+        return ToStringBuilder.reflectionToString(this);
+    }
+}
+package tree;
+
+import java.awt.*;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+
+import entity.Node;
+import util.Commons.Constants;
+
+/**
+ * @source https://github.com/EslaMx7/AI-Tasks-JADE-Tests/blob/master/src/trees/tasks/treeGUI.java
+ */
+public class BinaryTreeUI extends JFrame
+{
+    public BinaryTreeUI(Node tree)
+    {
+        JPanel contentPanel = new JPanel();
+        DrawTree drawer = new DrawTree(tree);
+
+        contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        contentPanel.setLayout(new BorderLayout(0, 0));
+        contentPanel.add(drawer);
+
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setBounds(100, 100, 900, 900);
+        setContentPane(contentPanel);
+        setVisible(true);
+    }
+
+    class DrawTree extends JPanel
+    {
+        private Node tree;
+
+        private DrawTree(Node tree)
+        {
+            this.tree = tree;
+        }
+
+        @Override
+        protected void paintComponent(Graphics g)
+        {
+            drawTree(g, 0, getWidth(), 0, getHeight() / maxLevel(tree), tree);
+        }
+
+        private void drawTree(Graphics g, int startWidth, int endWidth, int startHeight, int level, Node node)
+        {
+            g.setFont(Constants.UI_FONT);
+            FontMetrics fm = g.getFontMetrics();
+            int dataWidth = fm.stringWidth(node.data);
+            g.drawString(node.data, (startWidth + endWidth) / 2 - dataWidth / 2, startHeight + level / 2);
+
+            if (node.left != null)
+                drawTree(g, startWidth, (startWidth + endWidth) / 2, startHeight + level, level, node.left);
+
+            if (node.right != null)
+                drawTree(g, (startWidth + endWidth) / 2, endWidth, startHeight + level, level, node.right);
+        }
+
+        private int maxLevel(Node node)
+        {
+            if (node == null)
+                return 0;
+
+            return Math.max(maxLevel(node.left), maxLevel(node.right)) + 1;
+        }
+    }
+}package tree;
+
+
+import static util.Commons.Constants.ATTRIBUTES;
+import static util.Commons.Constants.SAMPLE_VALUES;
+import static util.Commons.Constants.SURVIVAL_STATUS;
+import static util.Commons.isIn;
+import static util.Commons.log2;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+
+import entity.Node;
+import entity.Patient;
+
+/**
+ * c4.5 and decision tree stuffs is here
+ * <p>
+ * Entropy : E(S)    =  sum:i:1->n  - Pr(Ci) * log2(Pr(Ci))
+ * Gain    : G(S, A) =  E(S) - sum(i:1->m  Pr(Ai) * E(SAi))
+ *
+ * @E(S) – information entropy of S
+ * @G(S,A) – gain of S after a split on attribute A
+ * @n – nr of classes in S //-- all patients
+ * @Pr(Ci) – frequency of class Ci in S
+ * @m – nr of values of attribute A in S
+ * @Pr(Ai) – frequency of cases that have Ai value in S
+ * @E(SAi) – subset of S with items that have Ai value
+ */
+public class DecisionTreeMaker
+{
+    public Node buildTree(List<Patient> patients)
+    {
+        Node node = new Node("-");
+        buildTree(node, patients, "root", Arrays.asList(SURVIVAL_STATUS));
+        return node;
+    }
+
+    private double entropy(List<Patient> patients, String attrName)
+    {
+        return patients.stream()
+                .map(patient -> Integer.valueOf(patient.getAttributeValue(attrName)))
+                .distinct().mapToDouble((value) ->
+                {
+                    double count = getPatientsThatValue(patients, attrName, value).size();
+                    double pr = count / patients.size();
+
+                    return count == 0 ? 0 : -pr * log2(pr);
+                }).sum();
+    }
+
+    private double informationGain(List<Patient> patients, String attrName)
+    {
+        double sum = patients.stream()
+                .map(patient -> Integer.valueOf(patient.getAttributeValue(attrName)))
+                .distinct().mapToDouble((value) ->
+                {
+                    List<Patient> subValues = getPatientsThatValue(patients, attrName, value);
+
+                    double pr = subValues.size() / Double.valueOf(patients.size());
+                    return pr * entropy(subValues, SURVIVAL_STATUS);
+                }).sum();
+
+
+        return entropy(patients, SURVIVAL_STATUS) - sum;
+    }
+
+    private double informationGain(List<Patient> patients, String attrName, int threshold)
+    {
+        List<Patient> subset = getAttributeValueBelow(patients, attrName, threshold);
+
+        double pr = subset.size() / Double.valueOf(patients.size());
+        double sum = -pr * entropy(subset, SURVIVAL_STATUS);
+
+        subset = getAttributeValueHigh(patients, attrName, threshold);
+        pr = subset.size() / Double.valueOf(patients.size());
+        sum += -pr * entropy(subset, SURVIVAL_STATUS);
+        return sum;
+    }
+
+
+    private int findThresholdWithMaxGain(List<Patient> patients, String attrName, int... values)
+    {
+        int maxValue = -1;
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+
+        List<Callable<Result>> tasks = new ArrayList<>();
+
+        for (int value : values)
+        {
+            Callable<Result> t = new Callable<Result>()
+            {
+                @Override
+                public Result call() throws Exception
+                {
+                    double gain = informationGain(patients, attrName, value);
+                    Result r = new Result();
+                    r.gain = gain;
+                    r.threshold = value;
+                    return r;
+                }
+            };
+            tasks.add(t);
+        }
+
+        try
+        {
+            Result reduce = executor.invokeAll(tasks) /** invokeAll: tum tasklarin tamamlanmasini bekliyor */
+                    .stream()
+                    .map(future ->
+                    {
+                        try
+                        {
+                            return future.get();
+                        }
+                        catch (Exception e)
+                        {
+                            throw new IllegalStateException(e);
+                        }
+                    })
+                    .reduce((a, b) -> a.gain > b.gain ? a : b).get();
+            return reduce.threshold;
+        }
+        catch (InterruptedException e)
+        {
+
+
+        }
+
+        executor.shutdown();
+
+
+        return maxValue;
+    }
+
+    private String findAttributeWithMaxInformationGain(List<Patient> patients, String... exclude)
+    {
+        //        System.out.println("-------------------");
+        String max = "";
+        double maxInfo = -5000d;
+        for (String attributeName : ATTRIBUTES)
+        {
+            if (isIn(attributeName, exclude))
+                continue;
+
+            double informationGain = informationGain(patients, attributeName);
+            //            System.out.format("entropy: %s, attr: %s \n", informationGain, attributeName);
+            if (informationGain > maxInfo)
+            {
+                maxInfo = informationGain;
+                max = attributeName;
+            }
+        }
+        //        System.out.println("-------------------");
+        return max;
+    }
+
+    private void buildTree(Node root, List<Patient> patients, String direction, List<String> exclude)
+    {
+        String attrWithMaxEntropy = findAttributeWithMaxInformationGain(patients, exclude.toArray(new String[0]));
+        if (attrWithMaxEntropy.equals(""))
+        {
+            System.out.println(patients.size());
+            add(root, patients);
+            return;
+        }
+
+        int thresholdWithMaxGain = findThresholdWithMaxGain(patients, attrWithMaxEntropy, SAMPLE_VALUES.get(attrWithMaxEntropy));
+
+        if (thresholdWithMaxGain == -1)
+        {
+            System.out.println(patients.size());
+            add(root, patients);
+            return;
+        }
+
+
+        Node node = addNode(root, direction, attrWithMaxEntropy, thresholdWithMaxGain);
+
+        List<String> subExclude = new ArrayList<>(exclude);
+        subExclude.add(attrWithMaxEntropy);
+
+
+        List<Patient> rightSubSet = getAttributeValueHigh(patients, attrWithMaxEntropy, thresholdWithMaxGain);
+        List<Patient> leftSubSet = getAttributeValueBelow(patients, attrWithMaxEntropy, thresholdWithMaxGain);
+        if (isOk(rightSubSet, subExclude) && isOk(leftSubSet, subExclude))
+        {
+            buildTree(node, leftSubSet, "left", subExclude);
+            buildTree(node, rightSubSet, "right", subExclude);
+        }
+        else
+        {
+            add(node, patients);
+        }
+
+
+    }
+
+    private boolean isOk(List<Patient> patients, List<String> excludes)
+    {
+        int size = getPatientsThatValue(patients, SURVIVAL_STATUS, 1).size();
+        if (size == 0 || size == patients.size())
+            return false;
+
+
+        String subattrWithMaxEntropy = findAttributeWithMaxInformationGain(patients, excludes.toArray(new String[0]));
+        if (subattrWithMaxEntropy.equals(""))
+            return false;
+        int subthresholdWithMaxGain = findThresholdWithMaxGain(patients, subattrWithMaxEntropy, SAMPLE_VALUES.get(subattrWithMaxEntropy));
+        if (subthresholdWithMaxGain == -1)
+            return false;
+        return true;
+    }
+
+    private void add(Node root, List<Patient> patients)
+    {
+        String name = "1(" + getPatientsThatValue(patients, SURVIVAL_STATUS, 1).size() + ")";
+        name += " 2(" + getPatientsThatValue(patients, SURVIVAL_STATUS, 2).size() + ")";
+        root.left = new Node(name);
+    }
+
+    private Node addNode(Node root, String direction, String attrWithMaxEntropy, int thresholdWithMaxGain)
+    {
+        Node newNode = new Node(attrWithMaxEntropy + "<" + thresholdWithMaxGain + ">");
+        switch (direction)
+        {
+            case "root":
+                root.data = newNode.data;
+                return root;
+
+            case "left":
+                root.left = newNode;
+                break;
+
+            case "right":
+                root.right = newNode;
+                break;
+
+        }
+
+        //        System.out.println(direction + " : " + attrWithMaxEntropy + ": " + thresholdWithMaxGain);
+        return newNode;
+    }
+
+    class Result
+    {
+        public double gain;
+        public int threshold;
+    }
+
+
+    private static List<Patient> getPatientsThatValue(List<Patient> patients, String attributeName, int value)
+    {
+        return patients.stream()
+                .filter(patient -> patient.getAttributeValue(attributeName).equals(String.valueOf(value)))
+                .collect(Collectors.toList());
+    }
+
+    private static List<Patient> getAttributeValueBelow(List<Patient> patients, String name, int threshold)
+    {
+        return patients.stream()
+                .filter(patient -> Integer.valueOf(patient.getAttributeValue(name)) < threshold)
+                .collect(Collectors.toList());
+    }
+
+    private static List<Patient> getAttributeValueHigh(List<Patient> patients, String name, int threshold)
+    {
+        return patients.stream()
+                .filter(patient -> Integer.valueOf(patient.getAttributeValue(name)) >= threshold)
+                .collect(Collectors.toList());
+    }
+}
+package util;
+
+import java.awt.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Commons
+{
+    //logaritm
+    public static double logb(double a, double b)
+    {
+        return Math.log(a) / Math.log(b);
+    }
+
+    public static double log2(double a)
+    {
+        return logb(a, 2);
+    }
+
+    public static boolean isIn(String val, String... arr)
+    {
+        for (String s : arr)
+        {
+            if (s.equals(val))
+                return true;
+        }
+
+        return false;
+    }
+
+    public interface Constants
+    {
+        Font UI_FONT = new Font("Tahoma", Font.BOLD, 20);
+
+        String AGE_OF_AT_TIME_OF_OPERATION = "ageOfPatient"; // Age of patient at time of operation (numerical)
+        String POSITIVE_AXILLARY_NODES_COUNT = "posAxNodesCount";
+        String YEAR_OF_OPERATION = "yearOfOperation";
+        String SURVIVAL_STATUS = "survivalStatus";
+
+        java.util.List<String> ATTRIBUTES = Arrays.asList(AGE_OF_AT_TIME_OF_OPERATION,
+                YEAR_OF_OPERATION,
+                POSITIVE_AXILLARY_NODES_COUNT,
+                SURVIVAL_STATUS);
+
+        Map<String, int[]> SAMPLE_VALUES = new HashMap<String, int[]>()
+        {{
+            put(Constants.AGE_OF_AT_TIME_OF_OPERATION, new int[]{50, 60, 70});
+            put(Constants.YEAR_OF_OPERATION, new int[]{62, 63, 64});
+            put(Constants.POSITIVE_AXILLARY_NODES_COUNT, new int[]{5, 10, 19});
+        }};
+    }
+}
+
+
+package util;
+
+import static util.Commons.Constants.ATTRIBUTES;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import entity.Patient;
+
+/**
+ * file operations is here
+ * - write or reading
+ */
+
+public class FileHelper
+{
+    private final static String ATTRIBUTE_SEPERATOR = ",";
+    private final static String FILENAME = "haberman.txt";
+
+    public List<Patient> readAllPatients()
+    {
+        List<Patient> patients = new ArrayList<>();
+
+        try
+        {
+            String filePath = getClass().getClassLoader().getResource(FILENAME).getFile();
+            File patientFile = new File(filePath);
+
+            Scanner read = new Scanner(patientFile);
+
+            while (read.hasNextLine())
+            {
+                String[] attrs = read.nextLine().split(ATTRIBUTE_SEPERATOR);
+
+                patients.add(buildPatientFromAttributes(attrs));
+            }
+
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+        return patients;
+    }
+
+    private Patient buildPatientFromAttributes(String[] attrs)
+    {
+        Patient patient = new Patient();
+
+        for (int i = 0; i < ATTRIBUTES.size(); i++)
+        {
+            patient.getAttributes().put(ATTRIBUTES.get(i), attrs[i]);
+        }
+
+        return patient;
+    }
+}
