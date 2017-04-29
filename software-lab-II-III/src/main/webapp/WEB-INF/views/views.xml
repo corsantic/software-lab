@@ -14,4 +14,7 @@
     <definition name="result" extends="layout.basic">
         <put-attribute name="body" value="/WEB-INF/views/result.jsp"/>
     </definition>
+    <definition name="register" extends="layout.basic">
+        <put-attribute name="body" value="/WEB-INF/views/register.jsp"/>
+    </definition>
 </tiles-definitions>
