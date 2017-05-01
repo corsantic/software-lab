@@ -20,9 +20,7 @@
                         <td colspan = "2">
                                 <input type = "submit" value = "Submit"/>
                         </td>
-                        <td colspan="2">
-                                <input type="button" value="Register"/>
-                        </td>
+
                 </tr>
         </table>
 </form:form>
