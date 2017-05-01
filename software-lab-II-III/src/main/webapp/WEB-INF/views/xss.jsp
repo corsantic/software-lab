@@ -16,7 +16,7 @@
 
 <ul>
     <c:forEach var="comment" items="${comments}">
-        <li><c:out escapeXml="false"  value="${comment.message}"></c:out></li>
+        <li><c:out escapeXml="false" value="${comment.message}"></c:out></li>
     </c:forEach>
 
 </ul>
