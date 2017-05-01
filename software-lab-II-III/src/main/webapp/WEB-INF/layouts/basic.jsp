@@ -25,9 +25,9 @@
         <ul>
             <li class="active"><a href="#">Anasayfa</a></li>
             <li><a href="#">Kurulum Dökümantasyon</a></li>
-            <li><a href="#">SQL Enjeksiyonu</a></li>
-            <li><a href="#">XSS</a></li>
-            <li><a href="#">Komut Enjeksiyonu</a></li>
+            <li><a href="/sqlInjection">SQL Enjeksiyonu</a></li>
+            <li><a href="/xss">XSS</a></li>
+            <li><a href="/commandInjection">Komut Enjeksiyonu</a></li>
         </ul>
     </div>
     <div class="content"><tiles:insertAttribute name="body"/></div>

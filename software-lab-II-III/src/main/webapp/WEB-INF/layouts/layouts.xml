@@ -6,7 +6,7 @@
 <tiles-definitions>
 
     <definition name="layout.basic" template="/WEB-INF/layouts/basic.jsp">
-        <put-attribute name="body" value="null" />
+        <put-attribute name="body" value="null"/>
     </definition>
 
 

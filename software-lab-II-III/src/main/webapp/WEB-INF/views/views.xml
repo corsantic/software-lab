@@ -8,11 +8,14 @@
     <definition name="home" extends="layout.basic">
         <put-attribute name="body" value="/WEB-INF/views/index.jsp"/>
     </definition>
-    <definition name="test" extends="layout.basic">
-    <put-attribute name="body" value="/WEB-INF/views/test.jsp"/>
+    <definition name="sqlInjection" extends="layout.basic">
+        <put-attribute name="body" value="/WEB-INF/views/sqlInjection.jsp"/>
     </definition>
-    <definition name="result" extends="layout.basic">
-        <put-attribute name="body" value="/WEB-INF/views/result.jsp"/>
+    <definition name="commandInjection" extends="layout.basic">
+        <put-attribute name="body" value="/WEB-INF/views/commandInjection.jsp"/>
+    </definition>
+    <definition name="xss" extends="layout.basic">
+        <put-attribute name="body" value="/WEB-INF/views/xss.jsp"/>
     </definition>
 
 </tiles-definitions>
