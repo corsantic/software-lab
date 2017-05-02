@@ -1,7 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<h2>Burasi bagcilar welcome to cehennem</h2>
-
+<h2>XSS</h2>
 
 <div>
     <form:form method="POST" action="/xss">
