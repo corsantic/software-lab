@@ -8,5 +8,4 @@
 
     <button type="submit">Ping</button>
 </form:form>
-<p>
-    ${result}</p>
+<p>${result}</p>
