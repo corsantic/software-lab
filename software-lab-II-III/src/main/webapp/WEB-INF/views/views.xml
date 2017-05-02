@@ -17,5 +17,8 @@
     <definition name="xss" extends="layout.basic">
         <put-attribute name="body" value="/WEB-INF/views/xss.jsp"/>
     </definition>
+    <definition name="setup" extends="layout.basic">
+        <put-attribute name="body" value="/WEB-INF/views/setup.jsp"/>
+    </definition>
 
 </tiles-definitions>
