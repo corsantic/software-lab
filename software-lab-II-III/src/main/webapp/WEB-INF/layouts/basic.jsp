@@ -6,6 +6,7 @@
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
 <tiles:importAttribute name="scripts" ignore="true"/>
 <tiles:importAttribute name="stylesheets" ignore="true"/>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <!doctype html>
 <head>
     <meta charset="utf-8"/>
@@ -14,6 +15,7 @@
     <c:forEach var="css" items="${stylesheets}">
         <link rel="stylesheet" type="text/css" href="${css}?v=${version}"/>
     </c:forEach>
+
 </head>
 <body>
 <header>
@@ -24,7 +26,7 @@
     <div class="left-menu">
         <ul>
             <li class="active"><a href="#">Anasayfa</a></li>
-            <li><a href="#">Kurulum Dökümantasyon</a></li>
+            <li><a href="/setup">Kurulum Dökümantasyon</a></li>
             <li><a href="/sqlInjection">SQL Enjeksiyonu</a></li>
             <li><a href="/xss">XSS</a></li>
             <li><a href="/commandInjection">Komut Enjeksiyonu</a></li>

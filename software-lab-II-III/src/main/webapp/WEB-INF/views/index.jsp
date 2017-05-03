@@ -1,8 +1,11 @@
+
+<%@ page contentType="text/html; charset=UTF-8" %>
+
 <h2>Zayıf Web Uygulaması</h2>
 
-<p>Kasıtlı olarak bırakılmış güvenlik za yetlerini (vulnerability) içeren zayıf (vulnerable) web uygulamaları,
-    uygulamalı siber güvenlik eği mlerinde önemli bir rol oynamaktadır. Öğrenciler, yasal olmayan bir şekilde gerçek
-    sistemlere saldırmadan bu p uygulamalar üzerinde öğrendiklerini tecrübe ederek kendilerini geliş
+<p>Kasıtlı olarak bırakılmış güvenlik zafiyetlerini (vulnerability) içeren zayıf (vulnerable) web uygulamaları,
+    uygulamalı siber güvenlik eğimlerinde önemli bir rol oynamaktadır. Öğrenciler, yasal olmayan bir şekilde gerçek
+    sistemlere saldırmadan bu uygulamalar üzerinde öğrendiklerini tecrübe ederek kendilerini geliş
     rebilmektedirler.</p>
 <p>Farklı programlama dillerinde (PHP, ASP, C# .NET, Node.js, PERL, Java, Ruby on Rails, Python, C++, ColdFusion vb.)
     yazılmış vulnerable web uygulamaları bulunmaktadır. Fakat, Türkçe yazılmış ve iyi bir şekilde dokümantasyonu
