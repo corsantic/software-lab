@@ -1,0 +1,2 @@
+INSERT INTO house (id, building_age, area, city, floor, description, price, room_count, type) VALUES (1, 12, 12, 'istanbul', 12, 'description', 100, 10, 'arsa');
+insert into image (id, url, house_id) VALUES (1, "sample url", 1);

@@ -12,6 +12,7 @@
         <module>../software-lab-II-I/</module>
         <module>../software-lab-II-II/</module>
         <module>../software-lab-II-III/</module>
+        <module>../software-lab-II-IV/house-restfull</module>
     </modules>
 
     <properties>
