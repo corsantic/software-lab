@@ -1,0 +1,1264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <packaging>war</packaging>
+    <groupId>com.kocaeli</groupId>
+    <artifactId>website-with-vulnerability</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <!--<parent>-->
+        <!--<groupId>com.kou</groupId>-->
+        <!--<artifactId>software-lab-parent</artifactId>-->
+        <!--<version>1.0-SNAPSHOT</version>-->
+        <!--<relativePath>../software-lab-parent</relativePath>-->
+    <!--</parent>-->
+
+    <build>
+        <finalName>website-with-vulnerability</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+
+    <properties>
+        <springframework.version>4.3.6.RELEASE</springframework.version>
+        <hibernate.version>5.0.5.Final</hibernate.version>
+        <mysql.connector.version>5.1.31</mysql.connector.version>
+        <joda-time.version>2.3</joda-time.version>
+        <tiles.version>3.0.5</tiles.version>
+        <jackson.databind-version>2.8.6</jackson.databind-version>
+    </properties>
+
+    <dependencies>
+
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-dbcp/commons-dbcp -->
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+
+        <!-- tiles -->
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-jsp</artifactId>
+            <version>${tiles.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tiles</groupId>
+            <artifactId>tiles-autotag-core-runtime</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
+
+        <!-- hibernate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.connector.version}</version>
+        </dependency>
+
+
+
+        <!-- Others -->
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>javax.servlet.jsp-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.8.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.databind-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-tools</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-annotations</artifactId>
+            <version>1.2.0.Beta1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.3.04</version>
+        </dependency>
+
+
+
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-annotations</artifactId>
+            <version>1.2.0.Beta1</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.0.5.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>4.3.6.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-annotations</artifactId>
+            <version>1.2.0.Beta1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging-annotations</artifactId>
+            <version>1.2.0.Beta1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-tools</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts-core</artifactId>
+            <version>1.3.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts-core</artifactId>
+            <version>1.3.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts-core</artifactId>
+            <version>1.3.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts-core</artifactId>
+            <version>1.3.8</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.8.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts-core</artifactId>
+            <version>1.3.8</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-core</artifactId>
+            <version>3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>4.3.5.Final</version>
+        </dependency>
+               <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>javax.servlet.jsp-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+            <version>1.0.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.0.5.Final</version>
+        </dependency>
+               <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>4.3.6.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts-core</artifactId>
+            <version>1.3.8</version>
+        </dependency>
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.3.04</version>
+        </dependency>
+
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.9.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.struts</groupId>
+            <artifactId>struts-core</artifactId>
+            <version>1.3.8</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-tools</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+    </dependencies>
+
+</project>package com.kocaeli.vulnerability.configuration;
+
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.env.Environment;
+import org.springframework.http.CacheControl;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.view.tiles3.TilesConfigurer;
+import org.springframework.web.servlet.view.tiles3.TilesView;
+import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
+
+@Configuration
+@EnableWebMvc
+@ComponentScan(basePackages = "com.kocaeli.vulnerability")
+@PropertySource(value = {"classpath:application.properties"})
+public class AppConfig extends WebMvcConfigurerAdapter
+{
+
+    @Autowired
+    private Environment environment;
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertyConfigIn()
+    {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
+
+
+    /**
+     * Configure ViewResolvers to deliver preferred views.
+     */
+    @Override
+    public void configureViewResolvers(ViewResolverRegistry registry)
+    {
+        TilesViewResolver tilesViewResolver = new TilesViewResolver();
+        tilesViewResolver.setViewClass(TilesView.class);
+        registry.viewResolver(tilesViewResolver);
+    }
+
+    @Bean
+    public TilesConfigurer tilesConfigurer()
+    {
+        TilesConfigurer configurer = new TilesConfigurer();
+        configurer.setDefinitions("/WEB-INF/layouts/layouts.xml", "/WEB-INF/views/**/views.xml");
+        return configurer;
+    }
+
+    /**
+     * Configure ResourceHandlers to serve static resources like CSS/ Javascript etc...
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry)
+    {
+        registry.addResourceHandler("/assets/**")
+                .addResourceLocations("/assets/")
+                .setCacheControl(CacheControl.maxAge(1, TimeUnit.SECONDS));
+    }
+}package com.kocaeli.vulnerability.configuration;
+
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer
+{
+    @Override
+    protected Class<?>[] getRootConfigClasses()
+    {
+        return new Class[]{AppConfig.class};
+    }
+
+    @Override
+    protected Class<?>[] getServletConfigClasses()
+    {
+        return null;
+    }
+
+    @Override
+    protected String[] getServletMappings()
+    {
+        return new String[]{"/"};
+    }
+
+}package com.kocaeli.vulnerability.configuration;
+
+
+import java.util.Properties;
+
+import javax.sql.DataSource;
+
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+@Configuration
+@EnableTransactionManagement
+@PropertySource(value = "classpath:application.properties")
+public class HibernateConfiguration
+{
+    @Autowired
+    private Environment environment;
+
+    @Bean
+    public LocalSessionFactoryBean sessionFactory()
+    {
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+        sessionFactory.setDataSource(dataSource());
+        sessionFactory.setPackagesToScan("com.kocaeli.vulnerability.entity");
+        sessionFactory.setHibernateProperties(hibernateProperties());
+        return sessionFactory;
+    }
+
+    @Bean
+    public DataSource dataSource()
+    {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
+        dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
+        dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
+        dataSource.setPassword(environment.getRequiredProperty("jdbc.password"));
+        return dataSource;
+    }
+
+    private Properties hibernateProperties()
+    {
+        Properties properties = new Properties();
+        addPropertiesWithMessage(properties, "hibernate.dialect");
+        addPropertiesWithMessage(properties, "hibernate.format_sql");
+        addPropertiesWithMessage(properties, "hibernate.show_sql");
+        addPropertiesWithMessage(properties, "hibernate.hbm2ddl.auto");
+        addPropertiesWithMessage(properties, "hibernate.hbm2ddl.import_files");
+
+        return properties;
+    }
+
+
+    @Bean
+    @Autowired
+    public HibernateTransactionManager transactionManager(SessionFactory s)
+    {
+        HibernateTransactionManager txManager = new HibernateTransactionManager();
+        txManager.setSessionFactory(s);
+        return txManager;
+    }
+
+    private void addPropertiesWithMessage(Properties properties, String messageKey)
+    {
+        properties.put(messageKey, environment.getRequiredProperty(messageKey));
+    }
+}
+package com.kocaeli.vulnerability.controller;
+
+import static com.kocaeli.vulnerability.utility.Commons.executeCommand;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.kocaeli.vulnerability.entity.Comment;
+import com.kocaeli.vulnerability.entity.User;
+import com.kocaeli.vulnerability.service.CommentService;
+import com.kocaeli.vulnerability.service.UserService;
+
+
+@Controller
+@RequestMapping("/")
+public class MainController
+{
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private CommentService commentService;
+
+
+    @RequestMapping(method = RequestMethod.GET)
+    public String home(Model model)
+    {
+        model.addAttribute("message", "Hello human!");
+        return "home";
+    }
+
+    @RequestMapping(value = "/setup", method = RequestMethod.GET)
+    public String setup()
+    {
+        return "setup";
+    }
+
+    @RequestMapping(value = "/xss", method = RequestMethod.GET)
+    public String postComment(Model model, @RequestParam(value = "postComment", required = false) String comment)
+    {
+        if (isNotBlank(comment))
+        {
+            Comment c = new Comment();
+            c.setMessage(comment);
+
+            commentService.saveOrUpdate(c);
+        }
+        model.addAttribute("comments", commentService.loadAll());
+
+        return "xss";
+    }
+
+    @RequestMapping(value = "/commandInjection", method = RequestMethod.GET)
+    public String commandInjectionPost(Model model, @RequestParam(value = "host", required = false) String host)
+    {
+        if (isNotBlank(host))
+        {
+//            host = filterHost(host); // saldirilari onlemek icin
+            String command = "ping  " + host;
+            model.addAttribute("result", executeCommand(command));
+        }
+        else
+        {
+            model.addAttribute("result", "Lutfen uygun bir host giriniz.");
+        }
+
+
+        return "commandInjection";
+    }
+
+    private String filterHost(String command)
+    {
+        String regex = "www.[a-z-Z]{0,}.(com|net|org)";
+        Pattern r = Pattern.compile(regex);
+
+        Matcher m = r.matcher(command);
+        if(m.find())
+            return m.group();
+        return "";
+    }
+
+
+    @RequestMapping(value = "/sqlInjection", method = RequestMethod.GET)
+    public String user(Model model, @RequestParam(value = "username", required = false) String username,
+                       @RequestParam(value = "password", required = false) String password)
+    {
+        String message = "Kullanici adi yada sifre bos olamaz.";
+        if (isNotBlank(password) && isNotBlank(username))
+        {
+
+            User loadedUser = userService.load(username, password);
+            message = loadedUser == null ? "Kullanici adi yada sifre yanlis" : "Hosgeldin " + loadedUser.getUsername();
+        }
+
+        model.addAttribute("message", message);
+        return "sqlInjection";
+    }
+}package com.kocaeli.vulnerability.dao;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.kocaeli.vulnerability.entity.Comment;
+
+@Repository
+@Transactional
+public class CommentDAO
+{
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    public List<Comment> loadAll()
+    {
+        Session currentSession = sessionFactory.getCurrentSession();
+        return currentSession.createCriteria(Comment.class).list();
+    }
+
+    public void saveOrUpdate(Comment comment)
+    {
+        Session currentSession = sessionFactory.getCurrentSession();
+        currentSession.saveOrUpdate(comment);
+    }
+}
+
+
+
+package com.kocaeli.vulnerability.dao;
+
+import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.kocaeli.vulnerability.entity.User;
+
+
+@Repository
+@Transactional
+public class UserDAO
+{
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    public User loadUserWithVulnerability(String username, String password)
+    {
+        Session currentSession = sessionFactory.getCurrentSession();
+        String sql = "select * from user where username='" + username + "' and password='" + password + "'";
+
+        SQLQuery query = currentSession.createSQLQuery(sql);
+        query.addEntity(User.class);
+
+        return query.list().size() > 0 ? (User) query.list().get(0) : null;
+    }
+
+    public User loadUserWithoutVulnerability(String username, String password)
+    {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
+        criteria.add(Restrictions.eq("username", username));
+        criteria.add(Restrictions.eq("password", password));
+
+        return criteria.list().size() > 0 ? (User) criteria.list().get(0) : null;
+    }
+}
+
+
+
+package com.kocaeli.vulnerability.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "comment")
+public class Comment implements Serializable
+{
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "message")
+    private String message;
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
+    public String getMessage()
+    {
+        return message;
+    }
+
+    public void setMessage(String message)
+    {
+        this.message = message;
+    }
+}package com.kocaeli.vulnerability.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "user")
+public class User implements Serializable
+{
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "password")
+    private String password;
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
+    public String getUsername()
+    {
+        return username;
+    }
+
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
+
+    public String getPassword()
+    {
+        return password;
+    }
+
+    public void setPassword(String password)
+    {
+        this.password = password;
+    }
+}package com.kocaeli.vulnerability.service;
+
+import java.util.List;
+
+import com.kocaeli.vulnerability.entity.Comment;
+
+public interface CommentService
+{
+    List<Comment> loadAll();
+
+    void saveOrUpdate(Comment comment);
+}package com.kocaeli.vulnerability.service;
+
+import com.kocaeli.vulnerability.entity.User;
+
+public interface UserService
+{
+    User load(String username, String password);
+}package com.kocaeli.vulnerability.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.kocaeli.vulnerability.dao.CommentDAO;
+import com.kocaeli.vulnerability.entity.Comment;
+import com.kocaeli.vulnerability.service.CommentService;
+
+@Service
+public class CommentServiceImpl implements CommentService
+{
+    @Autowired
+    private CommentDAO commentDAO;
+
+    @Override
+    public List<Comment> loadAll()
+    {
+        return commentDAO.loadAll();
+    }
+
+    @Override
+    public void saveOrUpdate(Comment comment)
+    {
+        commentDAO.saveOrUpdate(comment);
+    }
+}package com.kocaeli.vulnerability.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.kocaeli.vulnerability.dao.UserDAO;
+import com.kocaeli.vulnerability.entity.User;
+import com.kocaeli.vulnerability.service.UserService;
+
+@Service
+public class UserServiceImpl implements UserService
+{
+    @Autowired
+    private UserDAO userDAO;
+
+    @Override
+    public User load(String username, String password)
+    {
+//        return userDAO.loadUserWithoutVulnerability(username, password);
+        return userDAO.loadUserWithVulnerability(username, password);
+    }
+}package com.kocaeli.vulnerability.utility;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Commons
+{
+    public static String executeCommand(String command)
+    {
+        command = "cmd.exe /c " + command;
+        StringBuffer output = new StringBuffer();
+
+        Process p;
+        try
+        {
+            p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null)
+            {
+                output.append(line + "\n");
+            }
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return output.toString();
+
+    }
+}
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url=jdbc:mysql://localhost:3306/koudb
+jdbc.username=kou
+jdbc.password=kou123
+hibernate.dialect=org.hibernate.dialect.MySQLDialect
+hibernate.show_sql=false
+hibernate.format_sql=false
+hibernate.hbm2ddl.auto=create
+hibernate.hbm2ddl.import_files=/sql/import.sqlinsert into user (id,username, password) values (1,'root', 'password');
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page isELIgnored="false" trimDirectiveWhitespaces="true" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="spring" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+<tiles:importAttribute name="scripts" ignore="true"/>
+<tiles:importAttribute name="stylesheets" ignore="true"/>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<!doctype html>
+<head>
+    <meta charset="utf-8"/>
+    <title>vulnerability</title>
+    <link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+    <c:forEach var="css" items="${stylesheets}">
+        <link rel="stylesheet" type="text/css" href="${css}?v=${version}"/>
+    </c:forEach>
+
+</head>
+<body>
+<header>
+    <img src="/assets/images/kou-logo.png">
+</header>
+
+<div class="container">
+    <div class="left-menu">
+        <ul>
+            <li class="active"><a href="#">Anasayfa</a></li>
+            <li><a href="/setup">Kurulum Dökümantasyon</a></li>
+            <li><a href="/sqlInjection">SQL Enjeksiyonu</a></li>
+            <li><a href="/xss">XSS</a></li>
+            <li><a href="/commandInjection">Komut Enjeksiyonu</a></li>
+        </ul>
+    </div>
+    <div class="content"><tiles:insertAttribute name="body"/></div>
+</div>
+
+<footer>
+    Zayif web uygulamasi
+</footer>
+<c:forEach var="js" items="${scripts}">
+    <script src="${js}?v=${version}" type="text/javascript"></script>
+</c:forEach>
+</body>
+</html>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+
+    <definition name="layout.basic" template="/WEB-INF/layouts/basic.jsp">
+        <put-attribute name="body" value="null"/>
+    </definition>
+
+
+</tiles-definitions><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+
+<h2>Command Injection</h2>
+
+<form:form method="POST" action="/commandInjection">
+    <input type="text" name="host" placeholder="ping address"/>
+
+    <button type="submit">Ping</button>
+</form:form>
+<p>${result}</p>
+<%@ page contentType="text/html; charset=UTF-8" %>
+
+<h2>Zayıf Web Uygulaması</h2>
+
+<p>Kasıtlı olarak bırakılmış güvenlik zafiyetlerini (vulnerability) içeren zayıf (vulnerable) web uygulamaları,
+    uygulamalı siber güvenlik eğimlerinde önemli bir rol oynamaktadır. Öğrenciler, yasal olmayan bir şekilde gerçek
+    sistemlere saldırmadan bu uygulamalar üzerinde öğrendiklerini tecrübe ederek kendilerini geliş
+    rebilmektedirler.</p>
+<p>Farklı programlama dillerinde (PHP, ASP, C# .NET, Node.js, PERL, Java, Ruby on Rails, Python, C++, ColdFusion vb.)
+    yazılmış vulnerable web uygulamaları bulunmaktadır. Fakat, Türkçe yazılmış ve iyi bir şekilde dokümantasyonu
+    yapılmış vulnerable web uygulamaları yok denecek kadar azdır.</p>
+<p>Bu projenin amacı ülkemizdeki siber güvenlik derslerinde kullanılabilecek bir düzeyde vulnerable web uygulamaları
+    geliş rmek r. Bunun için sadece üzerinde za yetler bulunan bir web uygulaması geliş rmek yeterli değildir, bu
+    uygulamadaki za yetlerin neden kaynaklandığının ve bu za yetlerin nasıl sömürüleceğinin (exploita on) de açık ve
+    anlaşılır bir şekilde dokümantasyonun yapılması gereklidir.</p>
+
+<h1>YAZILIM LABORATUVARI PROJE 3</h1>
+<h2>ZAYIF WEB UYGULAMALARI GELİŞTİRİLMESİ PROJE DÖKÜMANI</h2>
+
+<h3>1-Kurulum Yapılabileceği İşletim Sistemleri</h3>
+Windows 7 ve sonrasında,Linux/GNU,Mac OS X ...
+<h3>2- Web sunucu yazılımının kurulumu</h3>
+Localhost için Tomcat Server kullanıldı ve bu Intellij IDE'sin de kullanıldı.
+Öncelikle bu url den Tomcat'i indirelim <a href="http://tomcat.apache.org/">TomCat</a>
+Daha sonra indirdiğimiz dosyayı intellij'de ayarlar kısmına girerek 'Application Servers' a tıklıyoruz ve + simgesine tıklayarak Tomcat'i ekliyoruz.
+Daha sonra Run sekmesinden Edit Configuration'a giriyoruz ve karşımıza Run/Debug Configurations çıkıyor '+' kısmına tıklıyoruz ve buradan Tomcat Server'ı bularak 'local' e tıklıyoruz .
+Deployment sekmesine gelerek tekrar '+' simgesine tıklıyoruz ve [projemizin adı]:war exploded yazan deployment'a tıklıyoruz bu bizim server startup'ımız oluyor.Bunu yaptıktan sonra en altta 'before launch' adında bir kısım orada da '+' simgesine tıklıyoruz ve Build Artifact diyoruz yukarda seçtiğimiz war exploded 'ı seçiyoruz.bu şekil de işlemimizi tamamlıyoruz artık serverımızı çalıştırabiliriz.
+İsteğe bağlı Maven build'i de eklenebilir.
+
+<h3>3-Veri Tabanı Kurulumu</h3>
+Veri tabanı olarak mysql kullanıldı.Ubuntu için kurulumu.Server kurulumunu Windows'ta yaptık 'Bash on Ubuntu on Windows' ta ise mysql kurulumunu gerçekleştirdik.
+https://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/
+Yukarıdaki linkten Bash Ubuntu kurulumu yapılabilir.
+<p>Öncelikle hostname kontrolü yapılıyor.<br>
+hostname<br>
+    hostname -f</p>
+
+<p>Daha sonra sitem güncelleştirilmesi yapılıyor.<br>
+sudo apt-get update<br>
+sudo apt-get upgrade<br>
+Yükleme için komut<br>
+    sudo apt-get install mysql-server</p>
+
+<p>Daha temiz ve daha güvenli mysql için<br>
+    sudo mysql_secure_installation</p>
+
+MySql'e root kullanıcı olarak giriş yapalım<br>
+mysql -u root -p<br>
+
+Eğer yukarıdaki gibi secure girildiyse password soracaktır onu girin.Ve mysql'e adımımızı atmış oluyoruz.
+<h3>4-Veri Tabanın Kurulumu</h3>
+Mysql 'e yukarıda giriş yapmıştık.Şimdi bir database oluşturup kullanıcı oluşturma ile veritabanının kurulumunu gerçekleştirilicek.
+mysql database ve kullanıcı oluşturma
+<p>-------------------------------------------------------------------------------------<br>
+create database koudb<br>
+CREATE USER 'kou'@'localhost' IDENTIFIED BY 'kou123' ;<br>
+CREATE USER 'kou'@'%' IDENTIFIED BY 'kou123' ;<br>
+GRANT ALL ON *.* TO 'kou'@'localhost' ;<br>
+GRANT ALL ON *.* TO 'kou'@'%' ;<br>
+FLUSH PRIVILEGES ;<br>
+    -------------------------------------------------------------------------------------</p>
+Yukarıda görüldüğü üzere kurulumu tamamladık.
+
+
+
+
+<%@ page contentType="text/html; charset=UTF-8" %>
+<h3>1.1-SQL Injection Zafiyeti</h3>
+İnternet sitelerinin bir çoğunda, sayfayı dinamik tutmak için veritabanından yararlanılır. Güncel veritabanı yazılımlarında birçoğunda (MySQL, MSSQL,  Sqlite, Oracle SQL) SQL (Structured Query Language) denilen ortak bir dil kullanılır.
+SQL Injection, SQL sorgusunun amacına müdahale ederek farklı bilgileri elde etmeye denir.
+Yani SQL Injection yöntemi ile üye bilgileri, yönetici şifreleri gibi veritabanında bulunup herkese açık olmayan bilgiler elde edilebilir.
+SQL Injection kullanılarak Yahoo! gibi büyük internet sitelerinin bile veritabanları ele geçirilmiştir.
+
+<h3>1.2-Güvensiz Kodlama</h3>
+"select * from user where username='" + username + "' and password='" + password + "'";<br>
+Kodda kullanılan bu SQL komutunda user tablosundan x kişisinin adına ve x kişisinin şifresine sahip olan veriyi getirmektedir.İşte burada bulunan zafiyet login sayfasın da gelen username ve password'un kontrollerinin zayıf olmasıyla ilgilidir.
+<p>Session currentSession = sessionFactory.getCurrentSession();</p>
+<p>String sql = "select * from user where username='" + username + "' and password='" + password + "'";//SQL string</p>
+
+
+<p>SQLQuery query = currentSession.createSQLQuery(sql);//SQL komutunun querye eklenmesi</p>
+<p>query.addEntity(User.class);</p>
+
+
+<h3>1.3-Sömürü</h3>
+"select * from user where username=' ' or 1=1 ' AND password=' ' or 1=1';<br>
+<p>girildiğinde yani username ve passworde yukarıdaki karakterler girildiğinde SQL dönen komut ile ilk veri tabanından gelen herhangi bir kullanıcı ile sisteme giriş yapılmış olacaktır.Bu şekilde sistemdeki kişilerin bilgileri sömürülebilir.
+    Örneğin aşağıdaki get isteği yapıldığında tablodaki ilk kullanıcı ile giriş yapılacaktır.</p>
+http://localhost:8080/sqlInjection?username=' or '1'='1&password=' or '1'='1
+
+<h3>1.4-İyileştirme</h3>
+Eğer aldığımız değerleri direkt sql query’de kullanmak yerine özel karakterleri filtreleyebiliriz. Bizim örneğimizde where kısmının Criteria ile yaptığımız durumda filtreleme otomatik yapılacaktır.<br>
+Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);<br>
+criteria.add(Restrictions.eq("username", username));<br>
+criteria.add(Restrictions.eq("password", password));<br>
+return criteria.list().size() > 0 ? (User) criteria.list().get(0) : null;<br>
+
+
+
+<h3>2.1-XSS-Cross Site Script Zafiyeti</h3>
+XSS (Cross Site Scripting) script kodları üzerinden (genelde javascript) bir web sayfasına saldırı yapılmasıdır.XSS çoğunlukla tarayıcıda saklanan bilgiler olan cookielere saldırı amacı ile kullanılmaktadır.
+
+<h3>2.2-Güvensiz Kodlama</h3>
+c:forEach var="comment" items="${comments}"<br>
+  c:out escapeXml="false" value="${comment.message}">/c:out // gelen deger xml’den kacmadan yaziliyor<br>
+/c:forEach<br>
+XSS script kodları üzerinden gerçekleştirilen bir saldırılır ve bu zafiyeti gidermek için herhangi bir kontrol konulmadığından dolayı kolaylıkla erişim sağlanır.
+
+<h3>2.3-Sömürü</h3>
+Sömürü kolaylıkla' script>"herhangi bir komut" /script ' bu şekilde sağlanabilir. Örneğin <%--<script>alert('XSS')</script> --%>şeklinde siteye bir comment eklediğimiz de giren kullanıcılara XSS diye bir alet gösterilecektir.Bu şekilde zafiyetten yararlanılarak bir çok saldırı yapılabilir.
+Örneğin aşağıdaki gibi bir istek yapıldığında bu sayfayı görüntüleyen tüm kullanıcılarda Hello yazan bir alert görünecektir.<br>
+http://localhost:8080/xss?postComment=%3Cscript%3Ealert(%27hello%27);%3C/script%3E
+
+<h3>2.4-İyileştirme</h3>
+Kullanıcının yorum olarak girdiği değeri gösterir iken html karakterini es geçer isek bu saldırıyı engellemiş oluruz.<br>
+c:forEach var="comment" items="${comments}"<br>
+   c:out escapeXml="true" value="${comment.message}">/c:out // bu durumda girilen html veyaz js calismayacaktir--%><br>
+/c:forEach<br>
+
+
+<h3>3.1-Command Injection Zafiyeti</h3>
+Command Injection, yani komut enjeksiyonu saldırganın zafiyet barındıran bir uygulama üzerinden hedef sistemde dilediği komutları çalıştırabilmesine denir. Komut ile kastedilen şey Windows'ta CMD ve Linux'ta Terminal pencerelerine girilen sistem komutlarıdır. Literatürde Shell kodlaması diye de geçer. Command Injection saldırısı büyük oranda yetersiz input denetleme mekanizması nedeniyle gerçekleşmektedir.
+
+<h3>3.2-Güvensiz Kodlama</h3>
+public static String executeCommand(String command)//komutun çalıştığı kısım<br>
+{<br>
+command = "cmd.exe /c " + command;<br>
+StringBuffer output = new StringBuffer();<br>
+
+Process p;<br>
+try<br>
+{<br>
+p = Runtime.getRuntime().exec(command);<br>
+p.waitFor();<br>
+BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));<br>
+
+String line;<br>
+while ((line = reader.readLine()) != null)<br>
+{<br>
+output.append(line + "\n");<br>
+}<br>
+
+}<br>
+catch (Exception e)<br>
+{<br>
+e.printStackTrace();<br>
+}<br>
+
+return output.toString();<br>
+
+}<br>
+
+Yukarıda komutun gönderildiği ve çalıştırıldığı fonksiyon bulunmaktadır.Aşağıda ise command'in gönderildiği controller bulunmaktadır.Fakat controller'a gelen host için herhangi bir kontrol yapılmamaktadır.Controller içinde host'la ilgili bazı kontroller yapılması gerekmektedir gelen host'a bazı kısıtlamalar getirilmeli yada karakterleri belli bir patterne göre alınmalıdır ki injection engellensin.
+<br>
+if (isNotBlank(host))//Basit blank kontrolu<br>
+{<br>
+String command = "ping  " + host; //gelen hostun command stringine eklenir.<br>
+model.addAttribute("result", executeCommand(command)); // execute olması için fonksiyonuna gönderilir<br>
+}<br>
+
+
+
+
+
+
+<h3>3.3-Sömürü</h3>
+Saldırgan cmd'ye rahat bir şekilde ulaşabildiği için artık bir çok şeyi yapabilir.Mesela 1;ls yazdığımız da 1 sayısı ile 1 adresine ping at demiş oluyoruz bu geçersiz bir komut olarak sayılacağı için ekrana sadece gönderdiğimiz komut ile ilgili bilgiler gelecektir.ls komutu ile de dizindeki dosyalarının isimlerini görüyoruz cd .. ile devam ederek dosyalar arasında geçişler yaparak tüm dosyalarına ulaşabiliriz.Bu yönden çok tehlikeli bir zafiyettir.
+Örneğin aşağıdaki örnekte olduğu gibi kendi kodumuzu çalıştırabiliriz. Burada son kısımda yazan işlem echo test bizim ekledigimiz bir koddur ve calisacaktir.<br>
+http://localhost:8080/commandInjection?host=www.google.com%26%26echo%20test
+
+
+<h3>3.4-İyileştirme</h3>
+Eğer gelen komutu direkt olarak çalıştırmayız aşağıdaki gibi bir filtreden geçirir isek bu saldırıyı engellemiş oluruz. Bizim örneğimiz için aşağıdaki gibi sadece beklenen url pattern’i varsa sadece o değer için işlem yapılacaktır.
+<br>
+private String filterHost(String command)<br>
+{<br>
+String regex = "www.[a-z-Z]{0,}.(com|net|org)";<br>
+Pattern r = Pattern.compile(regex);<br>
+Matcher m = r.matcher(command);<br>
+if(m.find())<br>
+return m.group();<br>
+return "";<br>
+}<br>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+
+<h2>User Information</h2>
+<p>${message}</p><?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+
+    <definition name="home" extends="layout.basic">
+        <put-attribute name="body" value="/WEB-INF/views/index.jsp"/>
+    </definition>
+    <definition name="sqlInjection" extends="layout.basic">
+        <put-attribute name="body" value="/WEB-INF/views/sqlInjection.jsp"/>
+    </definition>
+    <definition name="commandInjection" extends="layout.basic">
+        <put-attribute name="body" value="/WEB-INF/views/commandInjection.jsp"/>
+    </definition>
+    <definition name="xss" extends="layout.basic">
+        <put-attribute name="body" value="/WEB-INF/views/xss.jsp"/>
+    </definition>
+    <definition name="setup" extends="layout.basic">
+        <put-attribute name="body" value="/WEB-INF/views/setup.jsp"/>
+    </definition>
+
+</tiles-definitions>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<h2>XSS</h2>
+
+<div>
+    <form:form method="POST" action="/xss">
+        <input name="comment" placeholder="your comment..."/>
+
+        <button type="submit">Post</button>
+    </form:form>
+</div>
+
+
+<h2>Yorumlar</h2>
+
+<ul>
+    <c:forEach var="comment" items="${comments}">
+        <li><c:out escapeXml="false" value="${comment.message}"></c:out></li>
+    </c:forEach>
+
+</ul>footer,
+header {
+
+    background: #2F2F2F;
+    text-align: center;
+    width: 100%;
+    height: 200px;
+
+}
+
+header {
+    position: absolute;
+    top: 0;
+}
+
+header img {
+    display: inline-block;
+    width: 150px;
+    height: 150px;
+}
+
+header:after {
+    content: '';
+    position: relative;
+    width: 100%;
+    height: 10px;
+    display: block;
+    bottom: -45px;
+    background: greenyellow;
+}
+
+footer {
+    bottom: 0;
+}
+
+footer:before {
+    content: '';
+    position: relative;
+    width: 100%;
+    height: 10px;
+    display: block;
+    top: -10px;
+    background: greenyellow;
+}
+
+body > div > div {
+    float: left;
+}
+
+.container {
+    width: 1000px;
+    margin: auto;
+    padding: 20px;
+    overflow: auto;
+    display: block;
+    height: auto;
+    margin-top: 200px;
+}
+
+.left-menu {
+    width: 25%;
+    margin-right: 30px;
+}
+
+.content {
+    width: 70%;
+}
+
+.left-menu > ul > li {
+    width: 100%;
+    height: 20px;
+    line-height: 20px;
+    background: #dedede;
+}
+
+.left-menu > ul > li.active {
+    width: 100%;
+    height: 20px;
+    line-height: 20px;
+    background: greenyellow;
+}
