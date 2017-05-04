@@ -48,6 +48,6 @@ public class HouseServiceImpl implements HouseService
     public void delete(Long houseId)
     {
         imageService.deleteByHouse(houseId);
-        houseRepository.delete(houseId);
+        houseRepository.deleteById(houseId);
     }
 }
