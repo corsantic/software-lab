@@ -50,4 +50,12 @@ public class HouseServiceImpl implements HouseService
         imageService.deleteByHouse(houseId);
         houseRepository.deleteById(houseId);
     }
+
+    @Override
+    public House loadWithDetail(Long id)
+    {
+        House house = houseRepository.findById(id).get();
+        house.setImages(imageService.findByHouse(house.getId()));
+        return house;
+    }
 }

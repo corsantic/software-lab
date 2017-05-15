@@ -12,4 +12,6 @@ public interface HouseService
     void saveOrUpdate(House house);
 
     void delete(Long houseId);
+
+    House loadWithDetail(Long id);
 }
