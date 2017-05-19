@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">House Viewer</string>
+    <string name="app_name">House Viewer</string>,
+    <string-array name="house_array">
+        <item>Kişi Seçiniz</item>
+        <item>Taha Kırca</item>
+        <item>Aycan Ayhan</item>
+        <item>Gökhan Musapaşaoğlu</item>
+    </string-array>
+
 </resources>

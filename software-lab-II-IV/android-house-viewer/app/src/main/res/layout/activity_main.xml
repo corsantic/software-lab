@@ -23,9 +23,58 @@
         android:layout_height="wrap_content"
 
 
-        android:text="Http GET Demo"/>
+        android:text=" GET "/>
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:entries="@array/house_array"
+        android:gravity="center"
+        android:prompt="@string/app_name" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/spinner1"
+        android:layout_below="@+id/spinner1"
+        android:layout_marginTop="26dp"
+        android:text="İsim:" />
+
+    <TextView
+        android:id="@+id/text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/text"
+        android:layout_alignBottom="@+id/text"
+        android:layout_centerHorizontal="true"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/text3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/text"
+        android:layout_below="@+id/text"
+        android:layout_marginTop="35dp"
+        android:text="Yaş:" />
+
+    <TextView
+        android:id="@+id/text4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/text3"
+        android:layout_alignLeft="@+id/text2"
+        android:text="" />
+
     <Button
 
+
+        android:id="@+id/my_button"
 
         android:layout_width="wrap_content"
 
@@ -34,17 +83,16 @@
 
 
         android:layout_gravity="center"
+        android:text="GET" />
 
+    <!--<EditText-->
+        <!--android:layout_margin="20dip"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:minLines="15"-->
+        <!--android:maxLines="15"-->
+        <!--android:textSize="12sp"-->
+        <!--android:editable="false"-->
+        <!--android:id="@+id/my_edit"/>-->
 
-        android:text="GET"
-        android:id="@+id/my_button"/>
-    <EditText
-        android:layout_margin="20dip"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:minLines="15"
-        android:maxLines="15"
-        android:textSize="12sp"
-        android:editable="false"
-        android:id="@+id/my_edit"/>
 </LinearLayout>
