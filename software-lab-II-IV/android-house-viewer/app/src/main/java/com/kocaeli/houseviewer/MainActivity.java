@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ListView;
 
 import com.android.volley.Request;
@@ -31,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private static CustomAdapter adapter;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
         updateHouseList();
 
 
-
         listView = (ListView) findViewById(R.id.list);
 
         adapter = new CustomAdapter(houseList, getApplicationContext());
@@ -50,13 +47,11 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
 
-        listView.setOnItemSelectedListener(new OnItemSelectedListener() {
-
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> arg0, View view,
-                                       int arg2, long arg3) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                House house = houseList.get(arg2);
+                House house = houseList.get(position);
 
                 Snackbar.make(view, house.getDescription() + "\n" + house.getType() + " Price: " + house.getPrice(), Snackbar.LENGTH_LONG)
                         .setAction("No action", null).show();
@@ -64,18 +59,15 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     updateHouseList();
 
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
             }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
 
-            }
         });
-
 
     }
 
@@ -124,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
 }
