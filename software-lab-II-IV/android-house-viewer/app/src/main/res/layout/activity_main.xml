@@ -5,7 +5,11 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:context="com.kocaeli.houseviewer.MainActivity"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_main">
 
 
     <TextView
@@ -20,12 +24,14 @@
             android:layout_alignLeft="@+id/spinner1"
             android:layout_below="@+id/spinner1"
             android:layout_marginTop="26dp"
-            android:text="EVler:"/>
+            android:text="Evler:"/>
     <ListView
         android:id="@+id/list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
+
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"

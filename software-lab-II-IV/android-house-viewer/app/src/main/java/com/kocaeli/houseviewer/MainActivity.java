@@ -22,10 +22,12 @@ import com.kocaeli.houseviewer.entity.House;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String HOUSES_URL = "http://ferdielik.me:8081";
-    ArrayList<House> houseList = new ArrayList<>();
+    List<House> houseList =new ArrayList<>();
+
     ListView listView;
     private static CustomAdapter adapter;
 
@@ -34,10 +36,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        updateHouseList();
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
-        updateHouseList();
 
 
         listView = (ListView) findViewById(R.id.list);
@@ -53,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
 
                 House house = houseList.get(position);
 
+
                 Snackbar.make(view, house.getDescription() + "\n" + house.getType() + " Price: " + house.getPrice(), Snackbar.LENGTH_LONG)
-                        .setAction("No action", null).show();
+                        .setAction("No Action", null).show();
 
                 try {
                     updateHouseList();
@@ -69,6 +71,25 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void updateHouseList() // todo: surekli calismali
@@ -97,25 +118,7 @@ public class MainActivity extends AppCompatActivity {
         queue.add(myReq);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
 
 }

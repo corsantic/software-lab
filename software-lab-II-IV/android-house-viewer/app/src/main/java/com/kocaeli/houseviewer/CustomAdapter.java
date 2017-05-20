@@ -13,11 +13,11 @@ import android.widget.TextView;
 
 import com.kocaeli.houseviewer.entity.House;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class CustomAdapter extends ArrayAdapter<House> implements View.OnClickListener {
 
-    private ArrayList<House> houseSet;
+    private List<House> houseSet;
     Context mContext;
 
 
@@ -28,7 +28,7 @@ public class CustomAdapter extends ArrayAdapter<House> implements View.OnClickLi
         ImageView info;
     }
 
-    public CustomAdapter(ArrayList<House> data, Context context) {
+    public CustomAdapter(List<House> data, Context context) {
         super(context, R.layout.row_item, data);
         this.houseSet = data;
         this.mContext = context;
