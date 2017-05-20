@@ -2,26 +2,16 @@
 
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:orientation="vertical">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
 
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text=" GET "/>
-
-    <Spinner
-            android:id="@+id/spinner1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="24dp"
-            android:entries="@array/house_array"
-            android:gravity="center"
-            android:prompt="@string/app_name"/>
 
     <TextView
             android:id="@+id/text"
@@ -30,6 +20,18 @@
             android:layout_alignLeft="@+id/spinner1"
             android:layout_below="@+id/spinner1"
             android:layout_marginTop="26dp"
-            android:text="İsim:"/>
-
+            android:text="EVler:"/>
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 </LinearLayout>
