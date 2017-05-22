@@ -22,7 +22,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 public class MainActivity extends AppCompatActivity
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity
             {
 
                 House house = houseList.get(position);
-                Intent intent = new Intent(getBaseContext(), HouseDetail.class);
+                Intent intent = new Intent(getBaseContext(), HouseDetailActivity.class);
                 intent.putExtra("houseId", house.getId());
 
                 startActivity(intent);

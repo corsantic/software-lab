@@ -1,5 +1,7 @@
 package com.kocaeli.houseviewer.entity;
 
+import java.util.List;
+
 public class House
 {
     private Long id;
@@ -13,7 +15,7 @@ public class House
     private Double price;
     private String description;
 
-    private Iterable<Image> images;
+    private List<Image> images;
 
     public Long getId()
     {
@@ -105,13 +107,8 @@ public class House
         this.description = description;
     }
 
-    public Iterable<Image> getImages()
+    public List<Image> getImages()
     {
         return images;
-    }
-
-    public void setImages(Iterable<Image> images)
-    {
-        this.images = images;
     }
 }

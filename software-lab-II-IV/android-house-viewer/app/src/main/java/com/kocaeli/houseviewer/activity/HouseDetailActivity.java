@@ -16,7 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-public class HouseDetail extends AppCompatActivity
+public class HouseDetailActivity extends AppCompatActivity
 {
     private static final String HOUSE_DETAIL_URL = "http://ferdielik.me:7070/rest/house/detail/";
 
@@ -29,12 +29,14 @@ public class HouseDetail extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.house_detail);
-        String houseId = getIntent().getExtras().getString("houseId");
+        Long houseId = getIntent().getExtras().getLong("houseId");
+
+        imagesLayout = (LinearLayout) findViewById(R.id.images);
 
         updateHouseList(houseId);
     }
 
-    private void updateHouseList(String houseId)
+    private void updateHouseList(Long houseId)
     {
         StringRequest myReq = new StringRequest(Request.Method.GET, HOUSE_DETAIL_URL + houseId, new Response.Listener<String>()
         {
@@ -60,7 +62,12 @@ public class HouseDetail extends AppCompatActivity
     {
         for (Image image : house.getImages())
         {
-            ImageView imageView = new ImageView(getBaseContext());
+            ImageView imageView = new ImageView(this);
+
+            imageView.setLayoutParams(new android.view.ViewGroup.LayoutParams(80,60));
+            imageView.setMaxHeight(20);
+            imageView.setMaxWidth(20);
+
             Picasso.with(getBaseContext()).load(image.getUrl()).into(imageView);
             imagesLayout.addView(imageView);
         }

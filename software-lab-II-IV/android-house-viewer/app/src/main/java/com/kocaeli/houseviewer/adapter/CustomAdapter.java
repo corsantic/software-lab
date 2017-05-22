@@ -6,27 +6,21 @@ import com.kocaeli.houseviewer.R;
 import com.kocaeli.houseviewer.entity.House;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class CustomAdapter extends ArrayAdapter<House>
 {
-
-
     private static class ViewHolder
     {
         TextView txtName;
         TextView txtType;
         TextView txtVersion;
         ImageView info;
-        RelativeLayout houseItem;
     }
 
     public CustomAdapter(List<House> data, Context context)
@@ -52,7 +46,6 @@ public class CustomAdapter extends ArrayAdapter<House>
             viewHolder.txtType = (TextView) convertView.findViewById(R.id.type);
             viewHolder.txtVersion = (TextView) convertView.findViewById(R.id.version_number);
             viewHolder.info = (ImageView) convertView.findViewById(R.id.item_info);
-            viewHolder.houseItem = (RelativeLayout) convertView.findViewById(R.id.house_item);
 
             convertView.setTag(viewHolder);
         }
