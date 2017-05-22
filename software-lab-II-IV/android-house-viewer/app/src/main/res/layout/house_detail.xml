@@ -8,12 +8,6 @@
               android:orientation="vertical"
               tools:context="com.kocaeli.houseviewer.activity.MainActivity">
 
-
-    <ImageView
-            android:id="@+id/resso"
-            android:layout_width="100dp"
-            android:layout_height="100dp"/>
-
     <TextView
             android:id="@+id/text"
             android:layout_width="wrap_content"
@@ -21,9 +15,11 @@
             android:layout_alignLeft="@+id/spinner1"
             android:layout_below="@+id/spinner1"
             android:layout_marginTop="26dp"
-            android:text="Evler:"/>
-    <ListView
-            android:id="@+id/list"
+            android:text=":"/>
+
+    <LinearLayout
+            android:id="@+id/images"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:orientation="horizontal"/>
 </LinearLayout>
