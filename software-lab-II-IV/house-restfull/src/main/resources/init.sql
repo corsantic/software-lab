@@ -1,3 +1,4 @@
+
 INSERT INTO house (id, building_age, area, city, floor, description, price, room_count, type) VALUES (1, 12, 912, 'Istanbul', 1, 'guzel is gorur', 2100, 10, 'arsa');
 INSERT INTO house (id, building_age, area, city, floor, description, price, room_count, type) VALUES (2, 2, 412, 'Paris', 3, 'yani iste', 3100, 10, 'Ev');
 INSERT INTO house (id, building_age, area, city, floor, description, price, room_count, type) VALUES (3, 5, 3212, 'Hong Kong', 92, 'gel gel', 5100, 10, 'Filla');
