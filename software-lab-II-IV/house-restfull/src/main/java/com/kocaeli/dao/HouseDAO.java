@@ -13,7 +13,7 @@ import com.kocaeli.entity.Image;
 public class HouseDAO
 {
     Connection connection;
-
+    
     public List<House> loadAllHouses() throws Exception
     {
         List<House> houses = new ArrayList<>();
@@ -23,7 +23,7 @@ public class HouseDAO
         {
             houses.add(ResultMapper.resultSetHouseMapping(rs));
         }
-
+        connection.close();
         return houses;
     }
 
@@ -32,6 +32,7 @@ public class HouseDAO
         ResultSet rs = executeQuery("select * from house where id = ?", id);
         House house = ResultMapper.resultSetHouseMapping(rs);
         house.setImages(loadImagesByHouseId(id));
+        connection.close();
         return house;
     }
 
@@ -43,6 +44,7 @@ public class HouseDAO
         {
             images.add(ResultMapper.resultSetHouseImageMapping(rs));
         }
+        connection.close();
         return images;
     }
 
@@ -55,9 +57,7 @@ public class HouseDAO
             statement.setObject(i + 1, args[i]);
 
         }
-        ResultSet rs = statement.executeQuery();
-        connection.close();
-        return rs;
+        return statement.executeQuery();
     }
 
     private void createConnection()
