@@ -13,12 +13,13 @@ import com.kocaeli.entity.Image;
 public class HouseDAO
 {
     Connection connection;
-    
+
     public List<House> loadAllHouses() throws Exception
     {
         List<House> houses = new ArrayList<>();
 
-        ResultSet rs = executeQuery("select * from house");
+        PreparedStatement st = executeQuery("select * from house");
+        ResultSet rs = st.executeQuery();
         while (rs.next())
         {
             houses.add(ResultMapper.resultSetHouseMapping(rs));
@@ -29,7 +30,8 @@ public class HouseDAO
 
     public House loadHouseDetailById(Long id) throws Exception
     {
-        ResultSet rs = executeQuery("select * from house where id = ?", id);
+        PreparedStatement st = executeQuery("select * from house where id = ?", id);
+        ResultSet rs = st.executeQuery();
         House house = ResultMapper.resultSetHouseMapping(rs);
         house.setImages(loadImagesByHouseId(id));
         connection.close();
@@ -39,26 +41,29 @@ public class HouseDAO
     public List<Image> loadImagesByHouseId(Long id) throws Exception
     {
         List<Image> images = new ArrayList<>();
-        ResultSet rs = executeQuery("select * from image where id = ?", id);
+        PreparedStatement st = executeQuery("select * from image where id = ?", id);
+        ResultSet rs = st.executeQuery();
 
         while (rs.next())
             images.add(ResultMapper.resultSetHouseImageMapping(rs));
 
+        st.close();
         connection.close();
         return images;
     }
 
-    private ResultSet executeQuery(String sql, Object... args) throws Exception
+    private PreparedStatement executeQuery(String sql, Object... args) throws Exception
     {
         createConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.closeOnCompletion();
+
         for (int i = 0; i < args.length; i++)
         {
             statement.setObject(i + 1, args[i]);
 
         }
-        return statement.executeQuery();
+        return statement;
 
     }
 

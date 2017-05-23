@@ -14,7 +14,6 @@ import com.kocaeli.dao.HouseDAO;
 import com.kocaeli.entity.House;
 
 @Path("/house")
-@Resource
 public class HouseService
 {
     private HouseDAO houseDAO;
