@@ -24,6 +24,7 @@ public class HouseDAO
         {
             houses.add(ResultMapper.resultSetHouseMapping(rs));
         }
+        st.close();
         connection.close();
         return houses;
     }
@@ -34,6 +35,7 @@ public class HouseDAO
         ResultSet rs = st.executeQuery();
         House house = ResultMapper.resultSetHouseMapping(rs);
         house.setImages(loadImagesByHouseId(id));
+        st.close();
         connection.close();
         return house;
     }
