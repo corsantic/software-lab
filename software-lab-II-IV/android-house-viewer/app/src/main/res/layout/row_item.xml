@@ -24,31 +24,24 @@
             android:text="TEST 6.0"
             android:textColor="@android:color/black"/>
 
-    <ImageView
-            android:id="@+id/item_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@android:drawable/ic_dialog_info"/>
-
 
     <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true">
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true">
 
         <TextView
                 android:id="@+id/version_heading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="API: "
+                android:text="Price: "
                 android:textColor="@android:color/black"
                 android:textStyle="bold"/>
 
         <TextView
-                android:id="@+id/version_number"
+                android:id="@+id/price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="23"

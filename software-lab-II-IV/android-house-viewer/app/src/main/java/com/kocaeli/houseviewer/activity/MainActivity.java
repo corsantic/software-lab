@@ -1,12 +1,8 @@
 package com.kocaeli.houseviewer.activity;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,11 +16,16 @@ import com.kocaeli.houseviewer.R;
 import com.kocaeli.houseviewer.adapter.CustomAdapter;
 import com.kocaeli.houseviewer.entity.House;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+{
     private static final String HOUSES_URL = "http://ferdielik.me:7070/rest/house/all";
     List<House> houseList = new ArrayList<>();
 
@@ -33,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
     CustomAdapter adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -41,9 +43,11 @@ public class MainActivity extends AppCompatActivity {
         updateHouseList();
 
         listView = (ListView) findViewById(R.id.list);
-        listView.setOnItemClickListener(new OnItemClickListener() {
+        listView.setOnItemClickListener(new OnItemClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
 
                 House house = houseList.get(position);
                 Intent intent = new Intent(getBaseContext(), HouseDetailActivity.class);
@@ -61,11 +65,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateHouseList() // todo: surekli calismali
     {
-        StringRequest myReq = new StringRequest(Request.Method.GET, HOUSES_URL, new Response.Listener<String>() {
+        StringRequest myReq = new StringRequest(Request.Method.GET, HOUSES_URL, new Response.Listener<String>()
+        {
             @Override
-            public void onResponse(String response) {
+            public void onResponse(String response)
+            {
                 Gson gson = new Gson();
-                Type listType = new TypeToken<ArrayList<House>>() {
+                Type listType = new TypeToken<ArrayList<House>>()
+                {
                 }.getType();
 
                 List<House> houses = gson.fromJson(response, listType);
@@ -75,12 +82,15 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
 
             }
-        }, new Response.ErrorListener() {
+        }, new Response.ErrorListener()
+        {
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void onErrorResponse(VolleyError error)
+            {
                 System.out.println(error.getMessage());
             }
-        }) {
+        })
+        {
 
         };
         myReq.setShouldCache(false);

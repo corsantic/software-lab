@@ -1,11 +1,5 @@
 package com.kocaeli.houseviewer.activity;
 
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -17,7 +11,14 @@ import com.kocaeli.houseviewer.entity.House;
 import com.kocaeli.houseviewer.entity.Image;
 import com.squareup.picasso.Picasso;
 
-public class HouseDetailActivity extends AppCompatActivity {
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+public class HouseDetailActivity extends AppCompatActivity
+{
     private static final String HOUSE_DETAIL_URL = "http://ferdielik.me:7070/rest/house/detail/";
 
     private House house;
@@ -25,7 +26,8 @@ public class HouseDetailActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.house_detail);
@@ -37,17 +39,21 @@ public class HouseDetailActivity extends AppCompatActivity {
         updateHouseList(houseId);
     }
 
-    private void updateHouseList(Long houseId) {
-        StringRequest myReq = new StringRequest(Request.Method.GET, HOUSE_DETAIL_URL + houseId, new Response.Listener<String>() {
+    private void updateHouseList(Long houseId)
+    {
+        StringRequest myReq = new StringRequest(Request.Method.GET, HOUSE_DETAIL_URL + houseId, new Response.Listener<String>()
+        {
             @Override
-            public void onResponse(String response) {
+            public void onResponse(String response)
+            {
                 Gson gson = new Gson();
                 house = gson.fromJson(response, House.class);
 
                 fillInfo(house);
 
             }
-        }, null) {
+        }, null)
+        {
         };
         myReq.setShouldCache(false);
 
@@ -55,16 +61,16 @@ public class HouseDetailActivity extends AppCompatActivity {
         queue.add(myReq);
     }
 
-    private void fillInfo(House house) {
-        for (Image image : house.getImages()) {
+    private void fillInfo(House house)
+    {
+        for (Image image : house.getImages())
+        {
 
             ImageView imageView = new ImageView(this);
 
             imageView.setLayoutParams(new android.view.ViewGroup.LayoutParams(1280, 720));
             imageView.setMaxHeight(1080);
             imageView.setMaxWidth(720);
-            image.setUrl("http://lorempixel.com/400/200/");//set etmemisiz reis :D
-            //// TODO: 23.5.2017 farklı url alması saglancak
             Picasso.with(getBaseContext()).load(image.getUrl()).into(imageView);
             imagesLayout.addView(imageView);
         }
@@ -78,22 +84,6 @@ public class HouseDetailActivity extends AppCompatActivity {
                 + "Kat:" + house.getFloor() + "\n" +
                 "Fiyat:" + house.getPrice() + "\n" +
                 "Açıklama:" + house.getDescription() + "\n");
-
-
-//
-//        private Long id;
-//
-//        private String city;
-//        private String type;
-//        private Integer area;
-//        private Integer roomCount;
-//        private Integer buildingAge;
-//        private Integer floor;
-//        private Double price;
-//        private String description;
-
-
-        // other info
 
     }
 }

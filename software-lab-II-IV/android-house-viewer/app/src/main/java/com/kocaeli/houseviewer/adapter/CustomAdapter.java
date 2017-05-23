@@ -1,57 +1,61 @@
 package com.kocaeli.houseviewer.adapter;
 
+import java.util.List;
+
+import com.kocaeli.houseviewer.R;
+import com.kocaeli.houseviewer.entity.House;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kocaeli.houseviewer.R;
-import com.kocaeli.houseviewer.entity.House;
-
-import java.util.List;
-
-public class CustomAdapter extends ArrayAdapter<House> {
-    public static class ViewHolder {
-        public TextView txtName;
-        public TextView txtType;
-        public TextView txtVersion;
-        ImageView info;
-    }
-
-    public CustomAdapter(List<House> data, Context context) {
+public class CustomAdapter extends ArrayAdapter<House>
+{
+    public CustomAdapter(List<House> data, Context context)
+    {
         super(context, R.layout.row_item, data);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
         House house = getItem(position);
 
         ViewHolder viewHolder;
 
-        if (convertView == null) {
+        if (convertView == null)
+        {
 
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.row_item, parent, false);
 
-            viewHolder.txtName = (TextView) convertView.findViewById(R.id.name);
-            viewHolder.txtType = (TextView) convertView.findViewById(R.id.type);
-            viewHolder.txtVersion = (TextView) convertView.findViewById(R.id.version_number);
-            viewHolder.info = (ImageView) convertView.findViewById(R.id.item_info);
+            viewHolder.description = (TextView) convertView.findViewById(R.id.name);
+            viewHolder.type = (TextView) convertView.findViewById(R.id.type);
+            viewHolder.price = (TextView) convertView.findViewById(R.id.price);
 
             convertView.setTag(viewHolder);
-        } else {
+        }
+        else
+        {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.txtName.setText(house.getDescription());
-        viewHolder.txtType.setText(house.getType());
-        viewHolder.txtVersion.setText(house.getPrice().toString());
+        viewHolder.description.setText(house.getDescription());
+        viewHolder.type.setText(house.getType());
+        viewHolder.price.setText(house.getPrice().toString());
 
         return convertView;
+    }
+
+    public static class ViewHolder
+    {
+        TextView description;
+        TextView type;
+        TextView price;
     }
 
 

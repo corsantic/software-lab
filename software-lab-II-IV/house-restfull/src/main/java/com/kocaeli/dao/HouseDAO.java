@@ -14,19 +14,6 @@ public class HouseDAO
 {
     Connection connection;
 
-    public HouseDAO()
-    {
-        try
-        {
-            Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:/opt/kou.db");
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     public List<House> loadAllHouses() throws Exception
     {
         List<House> houses = new ArrayList<>();
@@ -61,13 +48,29 @@ public class HouseDAO
 
     private ResultSet executeQuery(String sql, Object... args) throws Exception
     {
+        createConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
         for (int i = 0; i < args.length; i++)
         {
             statement.setObject(i + 1, args[i]);
 
         }
-        return statement.executeQuery();
+        ResultSet rs = statement.executeQuery();
+        connection.close();
+        return rs;
+    }
+
+    private void createConnection()
+    {
+        try
+        {
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:/opt/kou.db");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
 }
