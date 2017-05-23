@@ -3,6 +3,7 @@ package com.kocaeli.houseviewer.activity;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -18,6 +19,7 @@ import com.kocaeli.houseviewer.entity.House;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,11 +29,13 @@ import android.widget.ListView;
 public class MainActivity extends AppCompatActivity
 {
     private static final String HOUSES_URL = "http://ferdielik.me:7070/rest/house/all";
-    List<House> houseList = new ArrayList<>();
+    private List<House> houseList = new ArrayList<>();
 
-    ListView listView;
+    private ListView listView;
 
-    CustomAdapter adapter;
+    private CustomAdapter adapter;
+
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -39,29 +43,25 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         updateHouseList();
 
         listView = (ListView) findViewById(R.id.list);
-        listView.setOnItemClickListener(new OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-
-                House house = houseList.get(position);
-                Intent intent = new Intent(getBaseContext(), HouseDetailActivity.class);
-                intent.putExtra("houseId", house.getId());
-
-                startActivity(intent);
-            }
-        });
-
+        listView.setOnItemClickListener(houseItemClickListener());
 
         adapter = new CustomAdapter(houseList, getBaseContext());
         listView.setAdapter(adapter);
-    }
 
+        handler = new Handler();
+        handler.post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                updateHouseList();
+                handler.postDelayed(this, TimeUnit.SECONDS.toMillis(5));
+            }
+        });
+    }
 
     private void updateHouseList() // todo: surekli calismali
     {
@@ -97,6 +97,23 @@ public class MainActivity extends AppCompatActivity
 
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(myReq);
+    }
+
+    private OnItemClickListener houseItemClickListener()
+    {
+        return new OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+
+                House house = houseList.get(position);
+                Intent intent = new Intent(getBaseContext(), HouseDetailActivity.class);
+                intent.putExtra("houseId", house.getId());
+
+                startActivity(intent);
+            }
+        };
     }
 
 

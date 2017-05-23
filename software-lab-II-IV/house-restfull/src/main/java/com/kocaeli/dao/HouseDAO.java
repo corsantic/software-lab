@@ -43,7 +43,7 @@ public class HouseDAO
     public List<Image> loadImagesByHouseId(Long id) throws Exception
     {
         List<Image> images = new ArrayList<>();
-        PreparedStatement st = executeQuery("select * from image where id = ?", id);
+        PreparedStatement st = executeQuery("select * from image where house_id = ?", id);
         ResultSet rs = st.executeQuery();
 
         while (rs.next())
