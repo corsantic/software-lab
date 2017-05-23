@@ -23,7 +23,7 @@ public class ResultMapper
         }
         catch (Exception e)
         {
-            System.out.println("something wrong");
+            e.printStackTrace();
         }
 
         return house;
@@ -41,7 +41,7 @@ public class ResultMapper
         }
         catch (Exception e)
         {
-            System.out.println("something wrong");
+            e.printStackTrace();
         }
 
         return image;
