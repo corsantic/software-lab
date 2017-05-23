@@ -1,0 +1,1140 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "com.kocaeli.houseviewer"
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    dependencies {
+        compile 'com.mcxiaoke.volley:library-aar:1.0.0'
+        compile 'com.loopj.android:android-async-http:1.4.9'
+        compile group: 'com.google.code.gson', name: 'gson', version: '1.7.2'
+        compile 'com.android.support:design:22.2.0'
+        compile 'com.squareup.picasso:picasso:2.5.2'
+
+        dependencies {
+            compile fileTree(dir: 'libs', include: ['*.jar'])
+            compile 'com.android.support:appcompat-v7:25.2.0'
+            compile 'com.nispok:snackbar:2.6.1'
+        }
+    }
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    testCompile 'junit:junit:4.12'
+}
+# Add project specific ProGuard rules here.
+# By default, the flags in this file are appended to flags specified
+# in /Users/ferdielik/Library/Android/sdk/tools/proguard/proguard-android.txt
+# You can edit the include path and order by changing the proguardFiles
+# directive in build.gradle.
+#
+# For more details, see
+#   http://developer.android.com/guide/developing/tools/proguard.html
+
+# Add any project specific keep options here:
+
+# If your project uses WebView with JS, uncomment the following
+# and specify the fully qualified class name to the JavaScript interface
+# class:
+#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+#   public *;
+#}
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
+          package="com.kocaeli.houseviewer">
+
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <application
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+
+
+        <activity android:name=".activity.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activity.HouseDetailActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+package com.kocaeli.houseviewer.activity;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.kocaeli.houseviewer.R;
+import com.kocaeli.houseviewer.entity.House;
+import com.kocaeli.houseviewer.entity.Image;
+import com.squareup.picasso.Picasso;
+
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+public class HouseDetailActivity extends AppCompatActivity
+{
+    private static final String HOUSE_DETAIL_URL = "http://ferdielik.me:7070/rest/house/detail/";
+
+    private House house;
+    private LinearLayout imagesView;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.house_detail);
+        Long houseId = getIntent().getExtras().getLong("houseId");
+
+        imagesView = (LinearLayout) findViewById(R.id.images);
+
+
+        updateHouseList(houseId);
+    }
+
+    private void updateHouseList(Long houseId)
+    {
+        StringRequest myReq = new StringRequest(Request.Method.GET, HOUSE_DETAIL_URL + houseId, new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response)
+            {
+                Gson gson = new Gson();
+                house = gson.fromJson(response, House.class);
+
+                fillInfo(house);
+
+            }
+        }, null)
+        {
+        };
+        myReq.setShouldCache(false);
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(myReq);
+    }
+
+    private void fillInfo(House house)
+    {
+        for (Image image : house.getImages())
+        {
+            imagesView.addView(buildImageView(image));
+        }
+        TextView textView = (TextView) findViewById(R.id.houseInfo);
+        textView.setText("Şehir:" + house.getCity() + "\n"
+                + "Tip:" + house.getType() + "\n"
+                + "Alan:" + house.getArea() + "\n" +
+                "Oda Sayısı:" + house.getRoomCount()
+                + "\n" +
+                "Yapılış Tarihi:" + house.getBuildingAge() + "\n"
+                + "Kat:" + house.getFloor() + "\n" +
+                "Fiyat:" + house.getPrice() + "\n" +
+                "Açıklama:" + house.getDescription() + "\n");
+
+    }
+
+    private ImageView buildImageView(Image image)
+    {
+        ImageView imageView = new ImageView(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(10, 10, 10, 20);
+        lp.gravity = Gravity.CENTER;
+        imageView.setLayoutParams(lp);
+        Picasso.with(getBaseContext()).load(image.getUrl()).into(imageView);
+        return imageView;
+    }
+}package com.kocaeli.houseviewer.activity;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.kocaeli.houseviewer.R;
+import com.kocaeli.houseviewer.adapter.CustomAdapter;
+import com.kocaeli.houseviewer.entity.House;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+
+public class MainActivity extends AppCompatActivity
+{
+    private static final String HOUSES_URL = "http://ferdielik.me:7070/rest/house/all";
+    private List<House> houseList = new ArrayList<>();
+
+    private ListView listView;
+
+    private CustomAdapter adapter;
+
+    private Handler handler;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        updateHouseList();
+
+        listView = (ListView) findViewById(R.id.list);
+        listView.setOnItemClickListener(houseItemClickListener());
+
+        adapter = new CustomAdapter(houseList, getBaseContext());
+        listView.setAdapter(adapter);
+
+        handler = new Handler();
+        handler.post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                updateHouseList();
+                handler.postDelayed(this, TimeUnit.SECONDS.toMillis(5));
+            }
+        });
+    }
+
+    private void updateHouseList() // todo: surekli calismali
+    {
+        StringRequest myReq = new StringRequest(Request.Method.GET, HOUSES_URL, new Response.Listener<String>()
+        {
+            @Override
+            public void onResponse(String response)
+            {
+                Gson gson = new Gson();
+                Type listType = new TypeToken<ArrayList<House>>()
+                {
+                }.getType();
+
+                List<House> houses = gson.fromJson(response, listType);
+                houseList.clear();
+                houseList.addAll(houses);
+
+                adapter.notifyDataSetChanged();
+
+            }
+        }, new Response.ErrorListener()
+        {
+            @Override
+            public void onErrorResponse(VolleyError error)
+            {
+                System.out.println(error.getMessage());
+            }
+        })
+        {
+
+        };
+        myReq.setShouldCache(false);
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(myReq);
+    }
+
+    private OnItemClickListener houseItemClickListener()
+    {
+        return new OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+
+                House house = houseList.get(position);
+                Intent intent = new Intent(getBaseContext(), HouseDetailActivity.class);
+                intent.putExtra("houseId", house.getId());
+
+                startActivity(intent);
+            }
+        };
+    }
+
+
+}package com.kocaeli.houseviewer.adapter;
+
+import java.util.List;
+
+import com.kocaeli.houseviewer.R;
+import com.kocaeli.houseviewer.entity.House;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
+
+public class CustomAdapter extends ArrayAdapter<House>
+{
+    public CustomAdapter(List<House> data, Context context)
+    {
+        super(context, R.layout.row_item, data);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+        House house = getItem(position);
+
+        ViewHolder viewHolder;
+
+        if (convertView == null)
+        {
+
+            viewHolder = new ViewHolder();
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            convertView = inflater.inflate(R.layout.row_item, parent, false);
+
+            viewHolder.description = (TextView) convertView.findViewById(R.id.name);
+            viewHolder.type = (TextView) convertView.findViewById(R.id.type);
+            viewHolder.price = (TextView) convertView.findViewById(R.id.price);
+
+            convertView.setTag(viewHolder);
+        }
+        else
+        {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+
+        viewHolder.description.setText(house.getDescription());
+        viewHolder.type.setText(house.getType());
+        viewHolder.price.setText(house.getPrice().toString());
+
+        return convertView;
+    }
+
+    public static class ViewHolder
+    {
+        TextView description;
+        TextView type;
+        TextView price;
+    }
+
+
+}package com.kocaeli.houseviewer.entity;
+
+import java.util.List;
+
+public class House
+{
+    private Long id;
+
+    private String city;
+    private String type;
+    private Integer area;
+    private Integer roomCount;
+    private Integer buildingAge;
+    private Integer floor;
+    private Double price;
+    private String description;
+
+    private List<Image> images;
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
+    public String getCity()
+    {
+        return city;
+    }
+
+    public void setCity(String city)
+    {
+        this.city = city;
+    }
+
+    public String getType()
+    {
+        return type;
+    }
+
+    public void setType(String type)
+    {
+        this.type = type;
+    }
+
+    public Integer getArea()
+    {
+        return area;
+    }
+
+    public void setArea(Integer area)
+    {
+        this.area = area;
+    }
+
+    public Integer getRoomCount()
+    {
+        return roomCount;
+    }
+
+    public void setRoomCount(Integer roomCount)
+    {
+        this.roomCount = roomCount;
+    }
+
+    public Integer getBuildingAge()
+    {
+        return buildingAge;
+    }
+
+    public void setBuildingAge(Integer buildingAge)
+    {
+        this.buildingAge = buildingAge;
+    }
+
+    public Integer getFloor()
+    {
+        return floor;
+    }
+
+    public void setFloor(Integer floor)
+    {
+        this.floor = floor;
+    }
+
+    public Double getPrice()
+    {
+        return price;
+    }
+
+    public void setPrice(Double price)
+    {
+        this.price = price;
+    }
+
+    public String getDescription()
+    {
+        return description;
+    }
+
+    public void setDescription(String description)
+    {
+        this.description = description;
+    }
+
+    public List<Image> getImages()
+    {
+        return images;
+    }
+}package com.kocaeli.houseviewer.entity;
+
+public class Image
+{
+    private Long id;
+    private Long houseId;
+    private String url;
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
+    public Long getHouseId()
+    {
+        return houseId;
+    }
+
+    public void setHouseId(Long houseId)
+    {
+        this.houseId = houseId;
+    }
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+    public void setUrl(String url)
+    {
+        this.url = url;
+    }
+}<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+     android:shareInterpolator="@android:anim/decelerate_interpolator">
+    <translate
+            android:fromXDelta="0%" android:toXDelta="0%"
+            android:fromYDelta="100%" android:toYDelta="0%"
+            android:duration="400"/>
+</set><?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+     android:shareInterpolator="@android:anim/decelerate_interpolator">
+    <translate
+            android:fromXDelta="0%" android:toXDelta="0%"
+            android:fromYDelta="-100%" android:toYDelta="0%"
+            android:duration="400"/>
+</set><?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="vertical"
+              tools:context="com.kocaeli.houseviewer.activity.MainActivity">
+
+    <TextView
+            android:id="@+id/houseInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/spinner1"
+            android:layout_below="@+id/spinner1"
+            android:layout_marginTop="26dp"
+            android:text="Houses"/>
+
+    <ListView
+            android:id="@+id/list"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+</LinearLayout>
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="vertical"
+              tools:context="com.kocaeli.houseviewer.activity.MainActivity">
+
+    <TextView
+            android:id="@+id/houseInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"/>
+
+    <ScrollView android:layout_width="match_parent"
+                android:layout_height="match_parent">
+        <LinearLayout
+                android:id="@+id/images"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/house_item"
+                android:padding="10dp">
+
+    <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:text="TEST"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/black"/>
+
+
+    <TextView
+            android:id="@+id/type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/name"
+            android:layout_marginTop="5dp"
+            android:text="TEST 6.0"
+            android:textColor="@android:color/black"/>
+
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true">
+
+        <TextView
+                android:id="@+id/version_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Price: "
+                android:textColor="@android:color/black"
+                android:textStyle="bold"/>
+
+        <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="23"
+                android:textAppearance="?android:attr/textAppearanceButton"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"/>
+
+
+    </LinearLayout>
+
+</RelativeLayout><menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+            android:id="@+id/action_settings"
+            android:orderInCategory="100"
+            android:title="herro!"
+            app:showAsAction="never"/>
+
+</menu><resources>
+    <!-- Example customization of dimensions originally defined in res/values/dimens.xml
+         (such as screen margins) for screens with more than 820dp of available width. This
+         would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively). -->
+    <dimen name="activity_horizontal_margin">64dp</dimen>
+</resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+</resources>
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+</resources>
+<resources>
+    <string name="app_name">House Viewer</string>,
+    <string-array name="house_array">
+        <item>Kişi Seçiniz</item>
+        <item>Taha Kırca</item>
+        <item>Aycan Ayhan</item>
+        <item>Gökhan Musapaşaoğlu</item>
+    </string-array>
+
+</resources>
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+</resources>
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.2'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+# Project-wide Gradle settings.
+
+# IDE (e.g. Android Studio) users:
+# Gradle settings configured through the IDE *will override*
+# any settings specified in this file.
+
+# For more details on how to configure your build environment visit
+# http://www.gradle.org/docs/current/userguide/build_environment.html
+
+# Specifies the JVM arguments used for the daemon process.
+# The setting is particularly useful for tweaking memory settings.
+org.gradle.jvmargs=-Xmx1536m
+
+# When configured, Gradle will run in incubating parallel mode.
+# This option should only be used with decoupled projects. More details, visit
+# http://www.gradle.org/docs/current/userguide/multi_project_builds.html#sec:decoupled_projects
+# org.gradle.parallel=true
+include ':app'
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.kocaeli</groupId>
+    <artifactId>${project.name}</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <name>${project.name}</name>
+    <description>Software Lab server-side</description>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <jersey.version>1.19</jersey.version>
+        <project.name>house-api</project.name>
+    </properties>
+
+    <build>
+        <finalName>${project.name}</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.18.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-servlet</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-json</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+
+    </dependencies>
+</project>
+package com.kocaeli.dao;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.kocaeli.entity.House;
+import com.kocaeli.entity.Image;
+
+public class HouseDAO
+{
+    Connection connection;
+
+    public List<House> loadAllHouses() throws Exception
+    {
+        List<House> houses = new ArrayList<>();
+
+        PreparedStatement st = executeQuery("select * from house");
+        ResultSet rs = st.executeQuery();
+        while (rs.next())
+        {
+            houses.add(ResultMapper.resultSetHouseMapping(rs));
+        }
+        st.close();
+        connection.close();
+        return houses;
+    }
+
+    public House loadHouseDetailById(Long id) throws Exception
+    {
+        PreparedStatement st = executeQuery("select * from house where id = ?", id);
+        ResultSet rs = st.executeQuery();
+        House house = ResultMapper.resultSetHouseMapping(rs);
+        house.setImages(loadImagesByHouseId(id));
+        st.close();
+        connection.close();
+        return house;
+    }
+
+    public List<Image> loadImagesByHouseId(Long id) throws Exception
+    {
+        List<Image> images = new ArrayList<>();
+        PreparedStatement st = executeQuery("select * from image where house_id = ?", id);
+        ResultSet rs = st.executeQuery();
+
+        while (rs.next())
+            images.add(ResultMapper.resultSetHouseImageMapping(rs));
+
+        st.close();
+        connection.close();
+        return images;
+    }
+
+    private PreparedStatement executeQuery(String sql, Object... args) throws Exception
+    {
+        createConnection();
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.closeOnCompletion();
+
+        for (int i = 0; i < args.length; i++)
+        {
+            statement.setObject(i + 1, args[i]);
+
+        }
+        return statement;
+
+    }
+
+    private void createConnection()
+    {
+        try
+        {
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:/opt/kou.db");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+}package com.kocaeli.dao;
+
+import java.sql.ResultSet;
+
+import com.kocaeli.entity.House;
+import com.kocaeli.entity.Image;
+
+public class ResultMapper
+{
+    public static House resultSetHouseMapping(ResultSet rs)
+    {
+        House house = new House();
+        try
+        {
+            house.setArea(rs.getInt("area"));
+            house.setBuildingAge(rs.getInt("building_age"));
+            house.setCity(rs.getString("city"));
+            house.setFloor(rs.getInt("floor"));
+            house.setId(rs.getLong("id"));
+            house.setDescription(rs.getString("description"));
+            house.setType(rs.getString("type"));
+            house.setPrice(rs.getDouble("price"));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return house;
+    }
+
+    public static Image resultSetHouseImageMapping(ResultSet rs)
+    {
+        Image image = new Image();
+        try
+        {
+            image.setId(rs.getLong("id"));
+            image.setHouseId(rs.getLong("house_id"));
+            image.setUrl(rs.getString("url"));
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return image;
+    }
+}
+package com.kocaeli.entity;
+
+public class House
+{
+    private Long id;
+
+    private String city;
+    private String type;
+    private Integer area;
+    private Integer roomCount;
+    private Integer buildingAge;
+    private Integer floor;
+    private Double price;
+    private String description;
+
+    private Iterable<Image> images;
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
+    public String getCity()
+    {
+        return city;
+    }
+
+    public void setCity(String city)
+    {
+        this.city = city;
+    }
+
+    public String getType()
+    {
+        return type;
+    }
+
+    public void setType(String type)
+    {
+        this.type = type;
+    }
+
+    public Integer getArea()
+    {
+        return area;
+    }
+
+    public void setArea(Integer area)
+    {
+        this.area = area;
+    }
+
+    public Integer getRoomCount()
+    {
+        return roomCount;
+    }
+
+    public void setRoomCount(Integer roomCount)
+    {
+        this.roomCount = roomCount;
+    }
+
+    public Integer getBuildingAge()
+    {
+        return buildingAge;
+    }
+
+    public void setBuildingAge(Integer buildingAge)
+    {
+        this.buildingAge = buildingAge;
+    }
+
+    public Integer getFloor()
+    {
+        return floor;
+    }
+
+    public void setFloor(Integer floor)
+    {
+        this.floor = floor;
+    }
+
+    public Double getPrice()
+    {
+        return price;
+    }
+
+    public void setPrice(Double price)
+    {
+        this.price = price;
+    }
+
+    public String getDescription()
+    {
+        return description;
+    }
+
+    public void setDescription(String description)
+    {
+        this.description = description;
+    }
+
+    public Iterable<Image> getImages()
+    {
+        return images;
+    }
+
+    public void setImages(Iterable<Image> images)
+    {
+        this.images = images;
+    }
+}package com.kocaeli.entity;
+
+public class Image
+{
+    private Long id;
+    private Long houseId;
+    private String url;
+
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
+    public Long getHouseId()
+    {
+        return houseId;
+    }
+
+    public void setHouseId(Long houseId)
+    {
+        this.houseId = houseId;
+    }
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+    public void setUrl(String url)
+    {
+        this.url = url;
+    }
+}package com.kocaeli.rest;
+
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import com.kocaeli.dao.HouseDAO;
+import com.kocaeli.entity.House;
+
+@Path("/house")
+public class HouseService
+{
+    private HouseDAO houseDAO;
+
+    @PostConstruct
+    void init()
+    {
+        houseDAO = new HouseDAO();
+    }
+
+    @GET
+    @Path("/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<House> getAll() throws Exception
+    {
+        return houseDAO.loadAllHouses();
+    }
+
+    @GET
+    @Path("/detail/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public House getWithDetail(@PathParam("id") Long id) throws Exception
+    {
+        return houseDAO.loadHouseDetailById(id);
+    }
+
+}<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         id="WebApp_ID" version="3.0">
+    <display-name>Kocaeli House Api</display-name>
+    <servlet>
+        <servlet-name>house-api</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>com.kocaeli.rest</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+            <param-value>true</param-value>
+        </init-param>
+
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>house-api</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
+</web-app>
