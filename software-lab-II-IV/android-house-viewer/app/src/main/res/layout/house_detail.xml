@@ -2,24 +2,24 @@
 
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-              tools:context="com.kocaeli.houseviewer.activity.MainActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context="com.kocaeli.houseviewer.activity.MainActivity">
 
     <TextView
-            android:id="@+id/text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/spinner1"
-            android:layout_below="@+id/spinner1"
-            android:layout_marginTop="26dp"
-            android:text=":"/>
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/spinner1"
+        android:layout_below="@+id/spinner1"
+        android:layout_marginTop="26dp" />
+
 
     <LinearLayout
-            android:id="@+id/images"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"/>
+        android:id="@+id/images"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
 </LinearLayout>

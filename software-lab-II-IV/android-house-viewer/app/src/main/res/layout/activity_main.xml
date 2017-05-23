@@ -2,28 +2,24 @@
 
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-              tools:context="com.kocaeli.houseviewer.activity.MainActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context="com.kocaeli.houseviewer.activity.MainActivity">
 
-
-    <ImageView
-            android:id="@+id/resso"
-            android:layout_width="100dp"
-            android:layout_height="100dp"/>
 
     <TextView
-            android:id="@+id/text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/spinner1"
-            android:layout_below="@+id/spinner1"
-            android:layout_marginTop="26dp"
-            android:text="Evler:"/>
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/spinner1"
+        android:layout_below="@+id/spinner1"
+        android:layout_marginTop="26dp"
+        android:text="Evler:" />
+
     <ListView
-            android:id="@+id/list"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
+        android:id="@+id/list"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
 </LinearLayout>

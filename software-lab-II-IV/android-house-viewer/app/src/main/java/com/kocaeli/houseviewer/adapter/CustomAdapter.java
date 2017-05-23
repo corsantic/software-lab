@@ -1,10 +1,5 @@
 package com.kocaeli.houseviewer.adapter;
 
-import java.util.List;
-
-import com.kocaeli.houseviewer.R;
-import com.kocaeli.houseviewer.entity.House;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,30 +8,30 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CustomAdapter extends ArrayAdapter<House>
-{
-    private static class ViewHolder
-    {
-        TextView txtName;
-        TextView txtType;
-        TextView txtVersion;
+import com.kocaeli.houseviewer.R;
+import com.kocaeli.houseviewer.entity.House;
+
+import java.util.List;
+
+public class CustomAdapter extends ArrayAdapter<House> {
+    public static class ViewHolder {
+        public TextView txtName;
+        public TextView txtType;
+        public TextView txtVersion;
         ImageView info;
     }
 
-    public CustomAdapter(List<House> data, Context context)
-    {
+    public CustomAdapter(List<House> data, Context context) {
         super(context, R.layout.row_item, data);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
-    {
+    public View getView(int position, View convertView, ViewGroup parent) {
         House house = getItem(position);
 
         ViewHolder viewHolder;
 
-        if (convertView == null)
-        {
+        if (convertView == null) {
 
             viewHolder = new ViewHolder();
             LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -48,9 +43,7 @@ public class CustomAdapter extends ArrayAdapter<House>
             viewHolder.info = (ImageView) convertView.findViewById(R.id.item_info);
 
             convertView.setTag(viewHolder);
-        }
-        else
-        {
+        } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
