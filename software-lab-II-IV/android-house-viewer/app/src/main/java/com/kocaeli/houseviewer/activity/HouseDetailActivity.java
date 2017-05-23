@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,7 +23,7 @@ public class HouseDetailActivity extends AppCompatActivity
     private static final String HOUSE_DETAIL_URL = "http://ferdielik.me:7070/rest/house/detail/";
 
     private House house;
-    private LinearLayout imagesLayout;
+    private LinearLayout imagesView;
 
 
     @Override
@@ -33,7 +34,7 @@ public class HouseDetailActivity extends AppCompatActivity
         setContentView(R.layout.house_detail);
         Long houseId = getIntent().getExtras().getLong("houseId");
 
-        imagesLayout = (LinearLayout) findViewById(R.id.images);
+        imagesView = (LinearLayout) findViewById(R.id.images);
 
 
         updateHouseList(houseId);
@@ -65,16 +66,9 @@ public class HouseDetailActivity extends AppCompatActivity
     {
         for (Image image : house.getImages())
         {
-
-            ImageView imageView = new ImageView(this);
-
-            imageView.setLayoutParams(new android.view.ViewGroup.LayoutParams(1280, 720));
-            imageView.setMaxHeight(1080);
-            imageView.setMaxWidth(720);
-            Picasso.with(getBaseContext()).load(image.getUrl()).into(imageView);
-            imagesLayout.addView(imageView);
+            imagesView.addView(buildImageView(image));
         }
-        TextView textView = (TextView) findViewById(R.id.text);
+        TextView textView = (TextView) findViewById(R.id.houseInfo);
         textView.setText("Şehir:" + house.getCity() + "\n"
                 + "Tip:" + house.getType() + "\n"
                 + "Alan:" + house.getArea() + "\n" +
@@ -85,5 +79,16 @@ public class HouseDetailActivity extends AppCompatActivity
                 "Fiyat:" + house.getPrice() + "\n" +
                 "Açıklama:" + house.getDescription() + "\n");
 
+    }
+
+    private ImageView buildImageView(Image image)
+    {
+        ImageView imageView = new ImageView(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(10, 10, 10, 20);
+        lp.gravity = Gravity.CENTER;
+        imageView.setLayoutParams(lp);
+        Picasso.with(getBaseContext()).load(image.getUrl()).into(imageView);
+        return imageView;
     }
 }
