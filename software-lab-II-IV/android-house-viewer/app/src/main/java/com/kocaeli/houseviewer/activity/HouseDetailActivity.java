@@ -1,5 +1,7 @@
 package com.kocaeli.houseviewer.activity;
 
+import java.util.concurrent.TimeUnit;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -12,6 +14,7 @@ import com.kocaeli.houseviewer.entity.Image;
 import com.squareup.picasso.Picasso;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -24,6 +27,7 @@ public class HouseDetailActivity extends AppCompatActivity
 
     private House house;
     private LinearLayout imagesView;
+    private Handler handler;
 
 
     @Override
@@ -32,15 +36,25 @@ public class HouseDetailActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.house_detail);
-        Long houseId = getIntent().getExtras().getLong("houseId");
+        final Long houseId = getIntent().getExtras().getLong("houseId");
 
         imagesView = (LinearLayout) findViewById(R.id.images);
 
+        updateHouseDetail(houseId);
 
-        updateHouseList(houseId);
+        handler = new Handler();
+        handler.post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                updateHouseDetail(houseId);
+                handler.postDelayed(this, TimeUnit.SECONDS.toMillis(3));
+            }
+        });
     }
 
-    private void updateHouseList(Long houseId)
+    private void updateHouseDetail(Long houseId)
     {
         StringRequest myReq = new StringRequest(Request.Method.GET, HOUSE_DETAIL_URL + houseId, new Response.Listener<String>()
         {
