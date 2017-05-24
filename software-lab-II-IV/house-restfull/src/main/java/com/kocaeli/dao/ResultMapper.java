@@ -20,6 +20,7 @@ public class ResultMapper
             house.setDescription(rs.getString("description"));
             house.setType(rs.getString("type"));
             house.setPrice(rs.getDouble("price"));
+            house.setRoomCount(rs.getInt("room_count"));
         }
         catch (Exception e)
         {
